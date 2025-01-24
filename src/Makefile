@@ -3,58 +3,58 @@ ARCH := $(shell uname -m)
 OPEN_CMD = open
 
 ARCH_PREFIX =
-CC=g++ -Werror -Wall -Wextra -std=c++17
+CC = g++
+CXXFLAGS = -Werror -Wall -Wextra -std=c++17
 LDFLAGS = -I.
 GTEST_FLAGS = $(shell pkg-config --cflags --libs gtest_main gtest)
-INCLUDES= -Icontainers -Icontainersplus
+INCLUDES = -Icontainers -Icontainersplus
 
-SOURCES=$(wildcard containers/*.cpp)
-OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=s21_containers.a
+# Source and object files
+SOURCES = $(wildcard containers/*.cpp)
+PLUS_SOURCES = $(wildcard containersplus/*.cpp)
+TEST_SOURCES = tests/*.cpp
 
-PLUS_SOURCES=$(wildcard containersplus/*.cpp)
-PLUS_OBJECTS=$(PULS_SOURCES:.cpp=.o)
-PLUS_EXECUTABLE=s21_containersplus.a
+# Build directory
+BUILD_DIR = build
+OBJECTS = $(patsubst containers/%.cpp, $(BUILD_DIR)/containers/%.o, $(SOURCES))
+PLUS_OBJECTS = $(patsubst containersplus/%.cpp, $(BUILD_DIR)/containersplus/%.o, $(PLUS_SOURCES))
 
-TEST_SOURCES=tests/*.cpp
-TEST_EXECUTABLE=test
+# Executables
+EXECUTABLE = $(BUILD_DIR)/libs21_containers.a
+PLUS_EXECUTABLE = $(BUILD_DIR)/libs21_containersplus.a
+TEST_EXECUTABLE = $(BUILD_DIR)/test
 
-ifeq ($(OS),Linux)
-    OS = LINUX
-endif
+# Ensure the build directory exists
+$(shell mkdir -p $(BUILD_DIR)/containers $(BUILD_DIR)/containersplus)
 
+# Targets
 all: $(EXECUTABLE) $(PLUS_EXECUTABLE)
 
 install:
-	if [ $(OS) = "LINUX" ]; then \
-		sudo apt-get install -y libgtest-dev; \
-		sudo apt-get install -y pkg-config; \
-	else \
-		brew install googletest pkg-config; \
-	fi
+ifeq ($(OS),Linux)
+	sudo apt-get install -y libgtest-dev pkg-config
+else
+	brew install googletest pkg-config
+endif
 
-$(EXECUTABLE):
-	$(CC) $(FLAGS) -c $(SOURCES)
-	ar rcs lib$(EXECUTABLE) $(OBJECTS)
-	ranlib lib$(EXECUTABLE)
-	rm -rf *.o
+$(EXECUTABLE): $(OBJECTS)
+	ar rcs $@ $^
 
-$(PLUS_EXECUTABLE):
-	$(CC) $(FLAGS) -c $(PLUS_SOURCES)
-	ar rcs lib$(PLUS_EXECUTABLE) $(PLUS_OBJECTS)
-	ranlib lib$(PLUS_EXECUTABLE)
-	rm -rf *.o
+$(PLUS_EXECUTABLE): $(PLUS_OBJECTS)
+	ar rcs $@ $^
 
-test: clean
-	$(CC) $(FLAGS) $(TEST_SOURCES) $(SOURCES) $(PLUS_SOURCES) -o $(TEST_EXECUTABLE) $(LDFLAGS) $(GTEST_FLAGS) $(INCLUDES)
+test: $(EXECUTABLE) $(PLUS_EXECUTABLE)
+	$(CC) $(CXXFLAGS) $(TEST_SOURCES) -o $(TEST_EXECUTABLE) $(LDFLAGS) $(GTEST_FLAGS) $(INCLUDES) -L$(BUILD_DIR) -ls21_containers -ls21_containersplus
 	./$(TEST_EXECUTABLE)
-	rm -rf *.o
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+$(BUILD_DIR)/containers/%.o: containers/%.cpp
+	$(CC) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+
+$(BUILD_DIR)/containersplus/%.o: containersplus/%.cpp
+	$(CC) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	rm -rf $(EXECUTABLE) $(PLUS_EXECUTABLE) $(TEST_EXECUTABLE) $(COVERAGE_FOLDER) report *.o *.a *.gcda *.gcno *.gcov *.html *.css *.info *.cleaned
+	rm -rf $(BUILD_DIR) report *.gcda *.gcno *.gcov *.html *.css *.info *.cleaned
 
 cppcheck:
 	cppcheck --enable=all --suppress=missingIncludeSystem .
@@ -70,12 +70,12 @@ format:
 	find . -type f \( -name '*.cpp' -o -name '*.h' \) -exec clang-format -i {} \; -exec clang-format -n {} \;
 
 checks: format cppcheck
-	if [ $(OS) = "LINUX" ]; then \
-		make valgrind;  \
-	else \
-		make leaks; \
-	fi
+ifeq ($(OS),Linux)
+	make valgrind
+else
+	make leaks
+endif
 
 rebuild: clean all
 
-.PHONY: all test gcov_report clean checks rebuild $(EXECUTABLE)
+.PHONY: all install test clean cppcheck valgrind leaks format checks rebuild
