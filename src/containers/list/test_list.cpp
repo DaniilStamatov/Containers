@@ -537,6 +537,12 @@ TEST(ListTest, BackMulty) {
   EXPECT_EQ(myList.back(), 5);
 }
 
+TEST(MaxSizeTest, Ints) {
+  s21::list<int> myList = {1, 2, 3, 4, 5};
+  std::list<int> List = {1, 2, 3, 4, 5};
+  EXPECT_EQ(myList.max_size(), List.max_size());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

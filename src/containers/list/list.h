@@ -65,12 +65,15 @@ class list {
   ~list();                       // destructor
   void update_end();
 
+  size_type size() const noexcept;
+  size_type max_size() const noexcept;
+
   bool empty();
   void copy(const list& l);
   void swap(list& l);
   list& operator=(const list& l) noexcept;
   list& operator=(list&& l) noexcept;
-  size_type size();
+
   void clear();
   iterator insert(iterator pos, const_reference value);
   void push_back(const_reference data) noexcept;
@@ -300,8 +303,13 @@ s21::list<T>& s21::list<T>::operator=(list&& l) noexcept {
 }
 
 template <typename T>
-typename s21::list<T>::size_type s21::list<T>::size() {
+typename s21::list<T>::size_type s21::list<T>::size() const noexcept {
   return m_size;
+}
+
+template <typename T>
+typename s21::list<T>::size_type s21::list<T>::max_size() const noexcept {
+  return std::numeric_limits<size_type>::max() / sizeof(Node) / 2;
 }
 
 template <typename T>
