@@ -82,3 +82,40 @@ inline rbtree<T>::rbtree_iterator& rbtree<T>::rbtree_iterator::operator++() {
   }
   return *this;
 }
+
+template <typename T>
+inline rbtree<T>::rbtree_iterator rbtree<T>::rbtree_iterator::operator++(int)
+{
+	rbtree_iterator temp(current_);
+	++(*this);
+	return temp;
+}
+
+template <typename T>
+inline rbtree<T>::rbtree_iterator &rbtree<T>::rbtree_iterator::operator--()
+{
+	if(current_ != nullptr){
+		if(current_->node_left_) {
+		current_ = current_->node_left_;
+		while (current_->node_right_) {
+			current_ = current_->node_right_;
+		}
+		} else {
+			node* temp = current_->node_parent_;
+			while(current_ == temp->node_left_) {
+				current_ = temp;
+				temp = current_->node_parent_;
+			}
+			current_ = temp;
+		}
+	}
+	return *this;
+}
+
+template <typename T>
+inline rbtree<T>::rbtree_iterator rbtree<T>::rbtree_iterator::operator--(int)
+{
+	rbtree_iterator temp(current_);
+	--(*this);
+	return temp;
+}
