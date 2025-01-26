@@ -119,3 +119,15 @@ inline rbtree<T>::rbtree_iterator rbtree<T>::rbtree_iterator::operator--(int)
 	--(*this);
 	return temp;
 }
+
+template <typename T>
+inline bool rbtree<T>::rbtree_iterator::operator==(const rbtree_iterator &lhs)
+{
+   return this->current_ == lhs.current_;
+}
+
+template <typename T>
+inline bool rbtree<T>::rbtree_iterator::operator!=(const rbtree_iterator &lhs)
+{
+    return this->current_ != lhs.current_;
+}
