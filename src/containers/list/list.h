@@ -8,36 +8,36 @@ class list {
  private:
   struct Node {
     Node() = default;
-    Node(const T& value, Node* next = nullptr, Node* prev = nullptr)
+    Node(const T &value, Node *next = nullptr, Node *prev = nullptr)
         : value_(value), next_(next), prev_(prev) {}
 
     T value_;
-    Node* next_ = nullptr;
-    Node* prev_ = nullptr;
+    Node *next_ = nullptr;
+    Node *prev_ = nullptr;
   };
 
  public:
   using value_type = T;
-  using reference = T&;
-  using const_reference = const T&;
+  using reference = T &;
+  using const_reference = const T &;
   using size_type = size_t;
 
   class ListIterator {
    public:
     ListIterator() noexcept;
-    ListIterator(Node* node) noexcept;
+    ListIterator(Node *node) noexcept;
 
     reference operator*() const;
-    ListIterator& operator++();
+    ListIterator &operator++();
     ListIterator operator++(int);
-    ListIterator& operator--();
+    ListIterator &operator--();
     ListIterator operator--(int);
-    bool operator==(const ListIterator& other) const;
-    bool operator!=(const ListIterator& other) const;
+    bool operator==(const ListIterator &other) const;
+    bool operator!=(const ListIterator &other) const;
 
    protected:
     friend class list;
-    Node* current_;
+    Node *current_;
   };
 
   class ListConstIterator : public ListIterator {
@@ -57,11 +57,11 @@ class list {
   list() noexcept;  // default constructor, creates empty list
   explicit list(
       size_type n);  // parameterized constructor, creates the list of size n
-  list(std::initializer_list<value_type> const&
-           items);  // initializer list constructor, creates list initizialized
-                    // using std::initializer_list
-  list(const list& l) noexcept;  // copy constructor
-  list(list&& l) noexcept;       // move constructor
+  list(std::initializer_list<value_type> const
+           &items);  // initializer list constructor, creates list initizialized
+                     // using std::initializer_list
+  list(const list &l) noexcept;  // copy constructor
+  list(list &&l) noexcept;       // move constructor
   ~list();                       // destructor
   void update_end();
 
@@ -69,10 +69,10 @@ class list {
   size_type max_size() const noexcept;
 
   bool empty();
-  void copy(const list& l);
-  void swap(list& l);
-  list& operator=(const list& l) noexcept;
-  list& operator=(list&& l) noexcept;
+  void copy(const list &l);
+  void swap(list &l);
+  list &operator=(const list &l) noexcept;
+  list &operator=(list &&l) noexcept;
 
   void clear();
   iterator insert(iterator pos, const_reference value);
@@ -80,8 +80,8 @@ class list {
   void pop_back();
   void push_front(const_reference value) noexcept;
   void pop_front();
-  void merge(list& other);
-  void splice(const_iterator pos, list& other);
+  void merge(list &other);
+  void splice(const_iterator pos, list &other);
   void sort();
   void reverse() noexcept;
   void unique();
@@ -90,9 +90,9 @@ class list {
   const_reference back();
 
  private:
-  Node* m_head;
-  Node* m_tail;
-  Node* m_end;
+  Node *m_head;
+  Node *m_tail;
+  Node *m_end;
   size_type m_size;
 };
 }  // namespace s21
@@ -101,7 +101,7 @@ template <typename T>
 s21::list<T>::ListIterator::ListIterator() noexcept : current_(nullptr) {}
 
 template <typename T>
-s21::list<T>::ListIterator::ListIterator(Node* node) noexcept
+s21::list<T>::ListIterator::ListIterator(Node *node) noexcept
     : current_(node) {}
 
 template <typename T>
@@ -110,7 +110,7 @@ typename s21::list<T>::reference s21::list<T>::ListIterator::operator*() const {
 };
 
 template <typename T>
-typename s21::list<T>::ListIterator& s21::list<T>::ListIterator::operator++() {
+typename s21::list<T>::ListIterator &s21::list<T>::ListIterator::operator++() {
   current_ = current_->next_;
   return *this;
 }
@@ -124,7 +124,7 @@ typename s21::list<T>::ListIterator s21::list<T>::ListIterator::operator++(
 }
 
 template <typename T>
-typename s21::list<T>::ListIterator& s21::list<T>::ListIterator::operator--() {
+typename s21::list<T>::ListIterator &s21::list<T>::ListIterator::operator--() {
   current_ = current_->prev_;
   return *this;
 }
@@ -139,12 +139,12 @@ typename s21::list<T>::ListIterator s21::list<T>::ListIterator::operator--(
 
 template <typename T>
 bool s21::list<T>::ListIterator::operator==(
-    const s21::list<T>::ListIterator& other) const {
+    const s21::list<T>::ListIterator &other) const {
   return current_ == other.current_;
 }
 
 template <typename T>
-bool s21::list<T>::ListIterator::operator!=(const ListIterator& other) const {
+bool s21::list<T>::ListIterator::operator!=(const ListIterator &other) const {
   return !(*this == other);
 }
 
@@ -191,7 +191,7 @@ s21::list<T>::list(size_type n) : m_head(nullptr), m_tail(nullptr), m_size(n) {
 }
 
 template <typename T>
-s21::list<T>::list(std::initializer_list<value_type> const& items)
+s21::list<T>::list(std::initializer_list<value_type> const &items)
     : m_head(nullptr), m_tail(nullptr), m_size(0) {
   m_end = new Node(T());
   for (value_type item : items) {
@@ -201,13 +201,13 @@ s21::list<T>::list(std::initializer_list<value_type> const& items)
 }
 
 template <typename T>
-s21::list<T>::list(const list& l) noexcept
+s21::list<T>::list(const list &l) noexcept
     : m_head(nullptr), m_tail(nullptr), m_size(0) {
   copy(l);
 }
 
 template <typename T>
-s21::list<T>::list(list&& l) noexcept
+s21::list<T>::list(list &&l) noexcept
     : m_head(nullptr), m_tail(nullptr), m_size(0), m_end(nullptr) {
   swap(l);
 }
@@ -222,8 +222,8 @@ void s21::list<T>::clear() {
 template <typename T>
 typename s21::list<T>::iterator s21::list<T>::insert(iterator pos,
                                                      const_reference value) {
-  Node* node = new Node(value);
-  Node* position = pos.current_;
+  Node *node = new Node(value);
+  Node *position = pos.current_;
   if (empty()) {
     m_head = node;
     m_tail = node;
@@ -248,8 +248,8 @@ typename s21::list<T>::iterator s21::list<T>::insert(iterator pos,
 }
 
 template <typename T>
-void s21::list<T>::copy(const list& l) {
-  Node* temp = l.m_head;
+void s21::list<T>::copy(const list &l) {
+  Node *temp = l.m_head;
   while (temp) {
     push_back(temp->value_);
     temp = temp->next_;
@@ -276,7 +276,7 @@ void s21::list<T>::update_end() {
 }
 
 template <typename value_type>
-void s21::list<value_type>::swap(list& l) {
+void s21::list<value_type>::swap(list &l) {
   std::swap(m_head, l.m_head);
   std::swap(m_tail, l.m_tail);
   std::swap(m_size, l.m_size);
@@ -284,7 +284,7 @@ void s21::list<value_type>::swap(list& l) {
 }
 
 template <typename T>
-s21::list<T>& s21::list<T>::operator=(const list& l) noexcept {
+s21::list<T> &s21::list<T>::operator=(const list &l) noexcept {
   if (this != &l) {
     list<T> temp(l);
     clear();
@@ -294,7 +294,7 @@ s21::list<T>& s21::list<T>::operator=(const list& l) noexcept {
 }
 
 template <typename T>
-s21::list<T>& s21::list<T>::operator=(list&& l) noexcept {
+s21::list<T> &s21::list<T>::operator=(list &&l) noexcept {
   if (this != &l) {
     clear();
     swap(l);
@@ -314,7 +314,7 @@ typename s21::list<T>::size_type s21::list<T>::max_size() const noexcept {
 
 template <typename T>
 void s21::list<T>::push_back(const_reference data) noexcept {
-  Node* node = new Node(data, nullptr, m_tail);
+  Node *node = new Node(data, nullptr, m_tail);
   if (m_tail) {
     m_tail->next_ = node;
   }
@@ -329,7 +329,7 @@ void s21::list<T>::push_back(const_reference data) noexcept {
 template <typename T>
 void s21::list<T>::pop_back() {
   if (size() == 0) throw std::out_of_range("Empty list!");
-  Node* last_node = m_tail;
+  Node *last_node = m_tail;
   if (m_size == 1) {
     m_head = nullptr;
     m_tail = nullptr;
@@ -344,7 +344,7 @@ void s21::list<T>::pop_back() {
 
 template <typename T>
 void s21::list<T>::push_front(const_reference value) noexcept {
-  Node* data = new Node(value, m_head, nullptr);
+  Node *data = new Node(value, m_head, nullptr);
   if (m_head) {
     m_head->prev_ = data;
   } else {
@@ -358,7 +358,7 @@ void s21::list<T>::push_front(const_reference value) noexcept {
 template <typename T>
 void s21::list<T>::pop_front() {
   if (m_head == nullptr) throw std::out_of_range("Empty list!");
-  Node* temp = m_head->next_;
+  Node *temp = m_head->next_;
   delete m_head;
   m_head = temp;
   if (m_head) {
@@ -371,7 +371,7 @@ void s21::list<T>::pop_front() {
 }
 
 template <typename T>
-void s21::list<T>::merge(list& other) {
+void s21::list<T>::merge(list &other) {
   if (this != &other) {
     if (!empty() && !other.empty()) {
       iterator first(begin());
@@ -393,7 +393,7 @@ void s21::list<T>::merge(list& other) {
 }
 
 template <typename T>
-void s21::list<T>::splice(const_iterator pos, list& other) {
+void s21::list<T>::splice(const_iterator pos, list &other) {
   iterator first = other.begin();
   while (first != other.end()) {
     insert(pos, *first++);
@@ -454,7 +454,7 @@ void s21::list<T>::unique() {
 
 template <typename T>
 void s21::list<T>::erase(iterator pos) {
-  Node* node = pos.current_;
+  Node *node = pos.current_;
   if (!empty() && node != m_end) {
     if (node == m_head) {
       pop_front();
