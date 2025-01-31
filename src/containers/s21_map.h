@@ -17,6 +17,14 @@ class map : public rbtree<K, T> {
   std::pair<iterator, bool> insert(const value_type& value) noexcept {
     return rbtree<K, T>::insert(value);
   }
+  std::pair<iterator, bool> insert(const K& key, const T& obj) noexcept {
+    return rbtree<K, T>::insert(key, obj);
+  }
+  std::pair<iterator, bool> insert_or_assign(const K& key, const T& obj) {
+    return rbtree<K, T>::insert_or_assign(key, obj);
+  }
+  void merge(map& other) { rbtree<K, T>::merge(other); }
+
   void erase(iterator pos) { rbtree<K, T>::erase(*pos); }
 
   size_type size() noexcept { return rbtree<K, T>::size(); }

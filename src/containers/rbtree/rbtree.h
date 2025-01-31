@@ -18,11 +18,11 @@ class rbtree {
           left_(nullptr),
           parent_(nullptr),
           mColor('R') {}
+    value_type value_;
     rbtree_node* right_;
     rbtree_node* left_;
     rbtree_node* parent_;
     char mColor;
-    value_type value_;
   };
 
   using node = rbtree_node;
@@ -52,27 +52,40 @@ class rbtree {
   rbtree(const std::initializer_list<value_type>& items);
   rbtree(const rbtree& other) noexcept;
   rbtree(rbtree&& other) noexcept;
+  void swap(rbtree<K, T>&& other);
+  void swap(rbtree<K, T>& other);
   ~rbtree();
 
-  void clear(node* node);
-  node* copy_tree(node* node);
   rbtree& operator=(const rbtree& other) noexcept;
   rbtree& operator=(rbtree&& other) noexcept;
+
   iterator begin() noexcept;
   iterator end() noexcept;
 
-  node* find_node(const K& key);
+  std::pair<iterator, bool> insert(const value_type& value) noexcept;
+  std::pair<iterator, bool> insert(const K& key, const T& obj);
+  std::pair<iterator, bool> insert_or_assign(const K& key, const T& obj);
+  void erase(const value_type& value);
+  void merge(rbtree& other);
+  T& at(const K& key);
+  T& operator[](const K& key);
+  bool contains(const K& key);
+  size_type size();
+  void print_tree() { print_tree(m_root, 0); }
+  void clear();
+
+ private:
   void rotate_left(node* pos);
   void rotate_right(node* pos);
-
   void insert(const value_type& value, iterator& iter, bool& inserted);
-
   void insert_node(node* temp, iterator& iter, bool& inserted);
-  std::pair<iterator, bool> insert(const value_type& value) noexcept;
-
-  void erase(const value_type& value);
+  node* find_node(const K& key);
+  void clear(node* node);
+  node* copy_tree(node* node);
   void transfer_node(node* deleted_node, node* inserted_node) noexcept;
-  void remove_connecton(node*& find);
+  bool is_leaf(node* n);
+  void set_new_grandfather(node* parent, node* uncle, node* grandfather,
+                           node*& pos);
   node* minimum(node* n);
   node* maximum(node* n);
   node* sibling(node* n);
@@ -85,14 +98,6 @@ class rbtree {
   void delete_case5(node* n);
   void delete_case6(node* n);
 
-  bool is_leaf(node* n);
-  void set_new_grandfather(node* parent, node* uncle, node* grandfather,
-                           node*& pos);
-  void fix_removing(node* pos);
-  size_type size();
-  void print_tree() { print_tree(m_root, 0); }
-
- private:
   void print_tree(node* current, int depth) {
     if (current == nullptr) {
       return;
@@ -103,6 +108,8 @@ class rbtree {
               << std::endl;
     print_tree(current->left_, depth + 1);
   }
+
+ private:
   node* m_root;
   size_type m_size;
 };
@@ -138,13 +145,11 @@ rbtree<K, T>::rbtree_iterator::operator++() {
       }
     } else {
       node* temp = current_->parent_;
-      while (current_ == temp->right_) {
+      while (temp != nullptr && current_ == temp->right_) {
         current_ = temp;
-        temp = current_->parent_;
+        temp = temp->parent_;
       }
-      if (current_->right_ != temp) {
-        current_ = temp;
-      }
+      current_ = temp;
     }
   }
   return *this;
@@ -169,9 +174,9 @@ rbtree<K, T>::rbtree_iterator::operator--() {
       }
     } else {
       node* temp = current_->parent_;
-      while (current_ == temp->left_) {
+      while (temp != nullptr && current_ == temp->left_) {
         current_ = temp;
-        temp = current_->parent_;
+        temp = temp->parent_;
       }
       current_ = temp;
     }
@@ -218,8 +223,23 @@ inline rbtree<K, T>::rbtree(const rbtree& other) noexcept
     : m_root(copy_tree(other.m_root)), m_size(other.m_size) {}
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree(rbtree&& other) noexcept : m_root(nullptr) {
+inline rbtree<K, T>::rbtree(rbtree&& other) noexcept
+    : m_root(nullptr), m_size(0) {
+  swap(other);
+}
+
+template <typename K, typename T>
+inline void rbtree<K, T>::swap(rbtree<K, T>&& other) {
   std::swap(m_root, other.m_root);
+  std::swap(m_size, other.m_size);
+}
+
+template <typename K, typename T>
+inline void rbtree<K, T>::swap(rbtree<K, T>& other) {
+  if (this != &other) {
+    std::swap(m_root, other.m_root);
+    std::swap(m_size, other.m_size);
+  }
 }
 
 template <typename K, typename T>
@@ -262,7 +282,7 @@ inline rbtree<K, T>& rbtree<K, T>::operator=(const rbtree& other) noexcept {
 template <typename K, typename T>
 inline rbtree<K, T>& rbtree<K, T>::operator=(rbtree&& other) noexcept {
   if (this != &other) {
-    std::swap(m_root, other.m_root);
+    swap(other);
   }
   return *this;
 }
@@ -274,7 +294,7 @@ inline typename rbtree<K, T>::iterator rbtree<K, T>::begin() noexcept {
 
 template <typename K, typename T>
 inline typename rbtree<K, T>::iterator rbtree<K, T>::end() noexcept {
-  return iterator(maximum(m_root));
+  return iterator(nullptr);
 }
 
 template <typename K, typename T>
@@ -349,6 +369,29 @@ std::pair<typename rbtree<K, T>::iterator, bool> rbtree<K, T>::insert(
   insert(value, it, is_inserted);
   std::pair<iterator, bool> res = {it, is_inserted};
   return res;
+}
+
+template <typename K, typename T>
+inline std::pair<typename rbtree<K, T>::iterator, bool> rbtree<K, T>::insert(
+    const K& key, const T& obj) {
+  return insert(std::make_pair(key, obj));
+}
+
+template <typename K, typename T>
+inline std::pair<typename rbtree<K, T>::iterator, bool>
+rbtree<K, T>::insert_or_assign(const K& key, const T& obj) {
+  iterator it = begin();
+  bool is_inserted = false;
+  node* n = find_node(key);
+  if (n == nullptr) {
+    is_inserted = true;
+
+    it = insert(key, obj).first;
+  } else {
+    it = iterator(n);
+    n->value_.second = obj;
+  }
+  return {it, is_inserted};
 }
 
 template <typename K, typename T>
@@ -466,6 +509,13 @@ inline void rbtree<K, T>::erase(const value_type& value) {
   --m_size;
 
   delete find;
+}
+
+template <typename K, typename T>
+inline void rbtree<K, T>::merge(rbtree& other) {
+  for (iterator it = other.begin(); it != other.end(); ++it) {
+    insert(*it);
+  }
 }
 
 template <typename K, typename T>
@@ -616,20 +666,11 @@ inline bool rbtree<K, T>::is_leaf(node* n) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::remove_connecton(rbtree<K, T>::node*& find) {
-  if (find->parent_) {
-    if (find->parent_->left_ == find) {
-      find->parent_->left_ = nullptr;
-    } else {
-      find->parent_->right_ = nullptr;
-    }
-  }
-}
-
-template <typename K, typename T>
 typename rbtree<K, T>::node* rbtree<K, T>::minimum(node* n) {
-  while (n->left_ != nullptr) {
-    n = n->left_;
+  if (n != nullptr) {
+    while (n->left_ != nullptr) {
+      n = n->left_;
+    }
   }
   return n;
 }
@@ -643,59 +684,10 @@ inline typename rbtree<K, T>::node* rbtree<K, T>::maximum(node* n) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::fix_removing(node* pos) {
-  node* copy = pos;
-  while (pos->mColor == 'B' && pos != m_root) {
-    node* brother = copy == copy->parent_->left_ ? copy->parent_->right_
-                                                 : copy->parent_->left_;
-    if (brother->mColor == 'R') {
-      brother->mColor = 'B';
-      copy->parent_->mColor = 'R';
-      if (pos == copy->parent_->left_) {
-        rotate_left(copy->parent_);
-      } else {
-        rotate_right(copy->parent_);
-      }
-      brother = copy == copy->parent_->left_ ? copy->parent_->right_
-                                             : copy->parent_->left_;
-    }
-    if (brother->right_->mColor == 'B' && brother->left_->mColor == 'B') {
-      brother->mColor = 'R';
-      copy = copy->parent_;
-    } else {
-      if (pos == copy->parent_->left_ && brother->right_->mColor == 'B') {
-        brother->left_->mColor = 'B';
-        brother->mColor = 'R';
-        rotate_right(brother);
-        brother = copy->parent_->right_;
-      } else if (pos == copy->parent_->right_ &&
-                 brother->right_->mColor == 'B') {
-        brother->right_->mColor = 'B';
-        brother->mColor = 'R';
-        rotate_left(brother);
-        brother = copy->parent_->left_;
-      }
-      brother->mColor = copy->parent_->mColor;
-      copy->parent_->mColor = 'B';
-      if (pos == copy->parent_->left_) {
-        brother->right_->mColor = 'B';
-        rotate_left(copy->parent_);
-      } else {
-        brother->left_->mColor = 'B';
-        rotate_right(copy->parent_);
-      }
-      copy = m_root;
-    }
-  }
-  copy->mColor = 'B';
-}
-
-template <typename K, typename T>
 inline void rbtree<K, T>::fix_insertion(node* pos) {
   if (pos == m_root) {
     pos->mColor = 'B';
   } else {
-    int count = 0;
     node* parent = pos->parent_;
 
     while (parent->mColor == 'R') {
@@ -744,6 +736,37 @@ inline void rbtree<K, T>::set_new_grandfather(rbtree<K, T>::node* parent,
 }
 
 template <typename K, typename T>
+inline T& rbtree<K, T>::at(const K& key) {
+  node* node = find_node(key);
+  if (node == nullptr) {
+    throw std::out_of_range("Key not found in the tree");
+  }
+  return node->value_.second;
+}
+
+template <typename K, typename T>
+inline T& rbtree<K, T>::operator[](const K& key) {
+  node* node = find_node(key);
+  if (node == nullptr) {
+    insert(key, T());
+    node = find_node(key);
+  }
+  return node->value_.second;
+}
+
+template <typename K, typename T>
+inline bool rbtree<K, T>::contains(const K& key) {
+  node* node = find_node(key);
+  return node != nullptr;
+}
+
+template <typename K, typename T>
 inline typename rbtree<K, T>::size_type rbtree<K, T>::size() {
   return m_size;
+}
+
+template <typename K, typename T>
+inline void rbtree<K, T>::clear() {
+  clear(m_root);
+  m_size = 0;
 }

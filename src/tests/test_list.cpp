@@ -2,7 +2,7 @@
 
 #include <list>
 
-#include "list.h"
+#include "../containers/s21_list.h"
 using namespace s21;
 TEST(Constructor, PushBackUltimate) {
   list<int> myList;
@@ -541,9 +541,4 @@ TEST(MaxSizeTest, Ints) {
   s21::list<int> myList = {1, 2, 3, 4, 5};
   std::list<int> List = {1, 2, 3, 4, 5};
   EXPECT_EQ(myList.max_size(), List.max_size());
-}
-
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }

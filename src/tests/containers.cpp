@@ -7,6 +7,4 @@ class ContainerTests : public ::testing::Test {
   }
 };
 
-TEST_F(ContainerTests, TestOfATest) {
-  EXPECT_EQ(1, 1);
-}
+TEST_F(ContainerTests, TestOfATest) { EXPECT_EQ(1, 1); }
