@@ -32,7 +32,7 @@ else
 endif
 
 test:
-	$(CC) $(CXXFLAGS) $(TEST_SOURCES) -o $(TEST_EXECUTABLE) $(LDFLAGS) $(GTEST_FLAGS) $(INCLUDES) -L$(BUILD_DIR)
+	$(CC) $(CXXFLAGS) $(TEST_SOURCES) -g -o $(TEST_EXECUTABLE) $(LDFLAGS) $(GTEST_FLAGS) $(INCLUDES) -L$(BUILD_DIR)
 	./$(TEST_EXECUTABLE)
 
 clean:
@@ -42,7 +42,7 @@ cppcheck:
 	cppcheck --enable=all --suppress=missingIncludeSystem .
 
 valgrind: $(TEST_EXECUTABLE)
-	CK_FORK=no valgrind --tool=memcheck --leak-check=yes ./$(TEST_EXECUTABLE)
+	CK_FORK=no valgrind --tool=memcheck --leak-check=yes -s ./$(TEST_EXECUTABLE)
 
 leaks: $(TEST_EXECUTABLE)
 	CK_FORK=no leaks -atExit -- ./$(TEST_EXECUTABLE)

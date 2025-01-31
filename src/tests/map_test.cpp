@@ -107,17 +107,13 @@ TEST(map_erase, EraseOperations) {
   it++;
   it++;
   it++;
-  s21_map.print_tree();
   s21_map.erase(it);
   EXPECT_EQ(s21_map.begin()->first, 4);
   EXPECT_EQ(s21_map.size(), 6U);
-  s21_map.print_tree();
-  printf("here\n");
   it = s21_map.begin();
   s21_map.erase(it);
   EXPECT_EQ(s21_map.begin()->first, 5);
   EXPECT_EQ(s21_map.size(), 5U);
-  s21_map.print_tree();
 
   it = s21_map.begin();
   ++it;
@@ -125,22 +121,18 @@ TEST(map_erase, EraseOperations) {
   s21_map.erase(it);
   EXPECT_EQ(s21_map.begin()->first, 5);
   EXPECT_EQ(s21_map.size(), 4U);
-  s21_map.print_tree();
 
   it = s21_map.begin();
   it++;
   s21_map.erase(it);
-  s21_map.print_tree();
 
   it = s21_map.begin();
   it++;
   s21_map.erase(it);
-  s21_map.print_tree();
 
   it = s21_map.begin();
   s21_map.erase(it);
 
-  s21_map.print_tree();
   it = s21_map.begin();
   s21_map.erase(it);
   EXPECT_EQ(s21_map.size(), 0);
@@ -194,7 +186,6 @@ TEST(map_merge, case1) {
 
   map<int, double> s21_map_int_res{pair11, pair22, pair33};
   s21_map_int_res.merge(s21_map_int_ref);
-  s21_map_int_res.print_tree();
   EXPECT_EQ(s21_map_int_res.size(), 6U);
 }
 

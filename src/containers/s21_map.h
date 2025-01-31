@@ -2,7 +2,7 @@
 #include "rbtree/rbtree.h"
 
 template <typename K, typename T>
-class map : public rbtree<K, T> {
+class map : protected rbtree<K, T> {
  public:
   using typename rbtree<K, T>::key_type;
   using typename rbtree<K, T>::mapped_type;
@@ -13,6 +13,7 @@ class map : public rbtree<K, T> {
   map(const map& other) : rbtree<K, T>(other) {};
   map(const std::initializer_list<value_type>& items) : rbtree<K, T>(items) {};
   map(map&& other) : rbtree<K, T>(std::move(other)) {};
+  ~map() = default;
 
   std::pair<iterator, bool> insert(const value_type& value) noexcept {
     return rbtree<K, T>::insert(value);
@@ -28,4 +29,12 @@ class map : public rbtree<K, T> {
   void erase(iterator pos) { rbtree<K, T>::erase(*pos); }
 
   size_type size() noexcept { return rbtree<K, T>::size(); }
+  bool contains(const K& key) { return rbtree<K, T>::contains(key); }
+
+  T& operator[](const K& key) { return rbtree<K, T>::operator[](key); }
+  T& at(const K& key) { return rbtree<K, T>::at(key); }
+  void swap(map<K, T>& other) { return rbtree<K, T>::swap(other); }
+  iterator begin() noexcept { return rbtree<K, T>::begin(); }
+
+  iterator end() noexcept { return rbtree<K, T>::end(); }
 };

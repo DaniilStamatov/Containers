@@ -222,9 +222,10 @@ void s21::list<T>::clear() {
 template <typename T>
 typename s21::list<T>::iterator s21::list<T>::insert(iterator pos,
                                                      const_reference value) {
-  Node *node = new Node(value);
+  Node *node = nullptr;
   Node *position = pos.current_;
   if (empty()) {
+    node = new Node(value);
     m_head = node;
     m_tail = node;
     node->next_ = nullptr;
@@ -236,15 +237,18 @@ typename s21::list<T>::iterator s21::list<T>::insert(iterator pos,
     } else if (pos == end()) {
       push_back(value);
     } else {
+      node = new Node(value);
       node->next_ = position;
       node->prev_ = position->prev_;
-      position->prev_->next_ = node;
+      if (position->prev_ != nullptr) {
+        position->prev_->next_ = node;
+      }
       position->prev_ = node;
       ++m_size;
     }
   }
   update_end();
-  return pos;
+  return iterator(node);
 }
 
 template <typename T>
@@ -265,13 +269,16 @@ bool s21::list<T>::empty() {
 template <typename T>
 s21::list<T>::~list() {
   clear();
+  delete m_end;
 }
 
 template <typename T>
 void s21::list<T>::update_end() {
-  m_end->prev_ = m_tail;
-  if (m_tail) {
-    m_tail->next_ = m_end;
+  if (m_end) {
+    if (m_tail) {
+      m_end->prev_ = m_tail;
+      m_tail->next_ = m_end;
+    }
   }
 }
 
@@ -364,10 +371,9 @@ void s21::list<T>::pop_front() {
   if (m_head) {
     m_head->prev_ = nullptr;
   } else {
-    m_tail = nullptr;
+    m_end = nullptr;
   }
   --m_size;
-  update_end();
 }
 
 template <typename T>

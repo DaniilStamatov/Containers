@@ -47,6 +47,7 @@ class rbtree {
 
   using iterator = rbtree_iterator;
 
+ protected:
   rbtree() noexcept;
   rbtree(node* node);
   rbtree(const std::initializer_list<value_type>& items);
@@ -54,7 +55,7 @@ class rbtree {
   rbtree(rbtree&& other) noexcept;
   void swap(rbtree<K, T>&& other);
   void swap(rbtree<K, T>& other);
-  ~rbtree();
+  virtual ~rbtree();
 
   rbtree& operator=(const rbtree& other) noexcept;
   rbtree& operator=(rbtree&& other) noexcept;
