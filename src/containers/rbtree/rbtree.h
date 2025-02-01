@@ -27,10 +27,12 @@ class rbtree {
 
   using node = rbtree_node;
 
+ protected:
   struct rbtree_iterator {
    public:
     rbtree_iterator() noexcept;
     rbtree_iterator(node* node) noexcept;
+    rbtree_iterator(const rbtree_iterator& other) : current_(other.current_) {};
     reference operator*() const;
     pointer operator->() const;
     rbtree_iterator& operator++();
@@ -38,6 +40,12 @@ class rbtree {
     rbtree_iterator& operator--();
     rbtree_iterator operator--(int);
     bool operator==(const rbtree_iterator& lhs);
+    rbtree_iterator& operator=(const rbtree_iterator& other) {
+      if (this != &other) {
+        current_ = other.current_;
+      }
+      return *this;
+    }
     bool operator!=(const rbtree_iterator& lhs);
 
    private:
@@ -66,6 +74,7 @@ class rbtree {
   std::pair<iterator, bool> insert(const value_type& value) noexcept;
   std::pair<iterator, bool> insert(const K& key, const T& obj);
   std::pair<iterator, bool> insert_or_assign(const K& key, const T& obj);
+  void erase(iterator pos);
   void erase(const value_type& value);
   void merge(rbtree& other);
   T& at(const K& key);
@@ -74,6 +83,8 @@ class rbtree {
   size_type size();
   void print_tree() { print_tree(m_root, 0); }
   void clear();
+
+  node* minimum(node* n);
 
  private:
   void rotate_left(node* pos);
@@ -87,7 +98,6 @@ class rbtree {
   bool is_leaf(node* n);
   void set_new_grandfather(node* parent, node* uncle, node* grandfather,
                            node*& pos);
-  node* minimum(node* n);
   node* maximum(node* n);
   node* sibling(node* n);
   void fix_insertion(node* pos);
@@ -459,6 +469,10 @@ inline typename rbtree<K, T>::node* rbtree<K, T>::sibling(node* n) {
   return sibling;
 }
 
+template <typename K, typename T>
+inline void rbtree<K, T>::erase(iterator pos) {
+  erase(*pos);
+}
 template <typename K, typename T>
 inline void rbtree<K, T>::erase(const value_type& value) {
   node* find = find_node(value.first);
