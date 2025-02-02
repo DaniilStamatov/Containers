@@ -1,7 +1,6 @@
+#pragma once
 #include <initializer_list>
 #include <stdexcept>
-#ifndef LIST_H
-#define LIST_H
 namespace s21 {
 template <typename T>
 class list {
@@ -54,15 +53,12 @@ class list {
   iterator end() noexcept;
   const_iterator cend() const noexcept;
 
-  list() noexcept;  // default constructor, creates empty list
-  explicit list(
-      size_type n);  // parameterized constructor, creates the list of size n
-  list(std::initializer_list<value_type> const
-           &items);  // initializer list constructor, creates list initizialized
-                     // using std::initializer_list
-  list(const list &l) noexcept;  // copy constructor
-  list(list &&l) noexcept;       // move constructor
-  ~list();                       // destructor
+  list() noexcept;
+  explicit list(size_type n);
+  list(std::initializer_list<value_type> const &items);
+  list(const list &other) noexcept;
+  list(list &&other) noexcept;
+  ~list();
   void update_end();
 
   size_type size() const noexcept;
@@ -182,7 +178,7 @@ s21::list<T>::list() noexcept : m_head(nullptr), m_tail(nullptr), m_size(0) {
 
 template <typename T>
 s21::list<T>::list(size_type n) : m_head(nullptr), m_tail(nullptr), m_size(n) {
-  if (n <= 0) throw std::out_of_range("Size must be greater than zero");
+  if (n == 0) throw std::out_of_range("Size must be greater than zero");
   m_end = new Node(T());
   for (size_type i = 0; i < n; i++) {
     push_back(value_type());
@@ -201,15 +197,15 @@ s21::list<T>::list(std::initializer_list<value_type> const &items)
 }
 
 template <typename T>
-s21::list<T>::list(const list &l) noexcept
+s21::list<T>::list(const list &other) noexcept
     : m_head(nullptr), m_tail(nullptr), m_size(0) {
-  copy(l);
+  copy(other);
 }
 
 template <typename T>
-s21::list<T>::list(list &&l) noexcept
+s21::list<T>::list(list &&other) noexcept
     : m_head(nullptr), m_tail(nullptr), m_size(0), m_end(nullptr) {
-  swap(l);
+  swap(other);
 }
 
 template <typename T>
@@ -484,4 +480,3 @@ template <typename T>
 typename s21::list<T>::const_reference s21::list<T>::back() {
   return m_tail ? m_tail->value_ : m_end->value_;
 }
-#endif

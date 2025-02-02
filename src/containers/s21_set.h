@@ -1,5 +1,5 @@
 #pragma once
-#include "rbtree/rbtree.h"
+#include "rbtree.h"
 template <typename K>
 class set : protected rbtree<K, K> {
  public:

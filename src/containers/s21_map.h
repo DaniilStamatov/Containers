@@ -1,5 +1,5 @@
 #pragma once
-#include "rbtree/rbtree.h"
+#include "rbtree.h"
 
 template <typename K, typename T>
 class map : protected rbtree<K, T> {
