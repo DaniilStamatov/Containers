@@ -9,6 +9,7 @@ class set : protected rbtree<K, K> {
   using typename rbtree<K, K>::size_type;
   using const_reference = const value_type&;
   using node = typename rbtree<K, K>::node;
+  using tree_iterator = typename rbtree<K, K>::iterator;
 
   set() : rbtree<K, K>() {};
   set(const set& other) : rbtree<K, K>(other) {};
@@ -20,9 +21,9 @@ class set : protected rbtree<K, K> {
   set(set&& other) : rbtree<K, K>(std::move(other)) {};
   ~set() = default;
 
-  class iterator : public rbtree<K, K>::rbtree_iterator {
+  struct iterator : public rbtree<K, K>::rbtree_iterator {
    public:
-    using tree_iterator = typename rbtree<K, K>::iterator;
+    iterator() : tree_iterator() {};
     iterator(node* node) : tree_iterator(node) {};
     iterator(const tree_iterator& it) : tree_iterator(it) {};
     K& operator*() {
@@ -49,7 +50,9 @@ class set : protected rbtree<K, K> {
 
   void merge(set& other) { rbtree<K, K>::merge(other); }
 
-  iterator find(const K& key) { return rbtree<K, K>::find(key); }
+  iterator find(const K& key) {
+    return iterator(tree_iterator(rbtree<K, K>::find_node(key)));
+  }
   bool contains(const K& key) noexcept { return rbtree<K, K>::contains(key); }
 
   size_type size() noexcept { return rbtree<K, K>::size(); }

@@ -101,3 +101,46 @@ TEST(set_erase, EraseOperations) {
   s21_set.erase(it);
   EXPECT_EQ(s21_set.size(), 0);
 }
+
+TEST(set_erase, case2) {
+  set<int> s21_set = {30, 1543};
+
+  auto it = s21_set.begin();
+  ++it;
+  s21_set.erase(it);
+  it = s21_set.begin();
+  s21_set.erase(it);
+
+  EXPECT_EQ(s21_set.size(), 0);
+}
+
+TEST(set_merge, case1) {
+  double val1 = 1.4;
+  double val2 = 2.77;
+  double val3 = 3.9;
+  double val11 = 4.59;
+  double val22 = 12.902;
+  double val33 = 56.41;
+
+  set<double> s21_set_int_ref{val1, val2, val3};
+
+  set<double> s21_set_int_res{val11, val22, val33};
+  s21_set_int_res.merge(s21_set_int_ref);
+  EXPECT_EQ(s21_set_int_res.size(), 6U);
+}
+
+TEST(set, case1) {
+  double val1 = 1.4;
+  double val2 = 2.77;
+  double val3 = 3.9;
+  double val11 = 4.59;
+  double val22 = 12.902;
+  double val33 = 56.41;
+
+  set<double> s21_set_int_ref{val1, val2, val3};
+
+  set<double> s21_set_int_res{val11, val22, val33};
+  s21_set_int_res.swap(s21_set_int_ref);
+  EXPECT_EQ(s21_set_int_res.size(), 3U);
+  EXPECT_TRUE(s21_set_int_ref.find(4.59) == s21_set_int_ref.begin());
+}

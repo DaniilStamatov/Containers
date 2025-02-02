@@ -53,7 +53,14 @@ class rbtree {
     node* current_;
   };
 
+  struct rbtree_const_iterator {
+   public:
+    rbtree_const_iterator() noexcept : rbtree_iterator() {};
+    const_reference operator*() const { return rbtree_iterator::operator*(); };
+  };
+
   using iterator = rbtree_iterator;
+  using const_iterator = rbtree_const_iterator;
 
  protected:
   rbtree() noexcept;
@@ -85,13 +92,13 @@ class rbtree {
   void clear();
 
   node* minimum(node* n);
+  node* find_node(const K& key);
 
  private:
   void rotate_left(node* pos);
   void rotate_right(node* pos);
   void insert(const value_type& value, iterator& iter, bool& inserted);
   void insert_node(node* temp, iterator& iter, bool& inserted);
-  node* find_node(const K& key);
   void clear(node* node);
   node* copy_tree(node* node);
   void transfer_node(node* deleted_node, node* inserted_node) noexcept;
