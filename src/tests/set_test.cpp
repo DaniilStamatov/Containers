@@ -23,7 +23,7 @@ TEST(set_test, insert_simple) {
   EXPECT_EQ(*insert5.first, 98);
   EXPECT_EQ(insert5.second, 1);
 
-  EXPECT_EQ(s21_set.size(), 3);
+  EXPECT_EQ(s21_set.size(), 3UL);
 }
 
 TEST(set_insert, case2) {
@@ -99,7 +99,7 @@ TEST(set_erase, EraseOperations) {
 
   it = s21_set.begin();
   s21_set.erase(it);
-  EXPECT_EQ(s21_set.size(), 0);
+  EXPECT_EQ(s21_set.size(), 0UL);
 }
 
 TEST(set_erase, case2) {
@@ -111,7 +111,7 @@ TEST(set_erase, case2) {
   it = s21_set.begin();
   s21_set.erase(it);
 
-  EXPECT_EQ(s21_set.size(), 0);
+  EXPECT_EQ(s21_set.size(), 0UL);
 }
 
 TEST(set_merge, case1) {

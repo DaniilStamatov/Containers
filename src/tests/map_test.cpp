@@ -32,7 +32,7 @@ TEST(map_test, insert_simple) {
   EXPECT_EQ(insert5.first->first, 98);
   EXPECT_EQ(insert5.second, 1);
 
-  EXPECT_EQ(s21_map.size(), 3);
+  EXPECT_EQ(s21_map.size(), 3UL);
 }
 
 TEST(map_insert, case2) {
@@ -88,7 +88,7 @@ TEST(map_insert, case5) {
   s21_map.insert(4, "four");
   s21_map.insert(5, "five");
 
-  EXPECT_EQ(s21_map.size(), 5);
+  EXPECT_EQ(s21_map.size(), 5UL);
 }
 
 TEST(map_erase, EraseOperations) {
@@ -135,7 +135,7 @@ TEST(map_erase, EraseOperations) {
 
   it = s21_map.begin();
   s21_map.erase(it);
-  EXPECT_EQ(s21_map.size(), 0);
+  EXPECT_EQ(s21_map.size(), 0UL);
 }
 
 TEST(map_erase, case2) {
@@ -159,18 +159,18 @@ TEST(map_insert_or_assign, case1) {
   s21_map.insert_or_assign(10, "ten");
   std_map.insert_or_assign(10, "ten");
   EXPECT_EQ("ten", s21_map.at(10));
-  EXPECT_EQ(s21_map.size(), 1);
+  EXPECT_EQ(s21_map.size(), 1UL);
   EXPECT_EQ(s21_map.at(10), std_map.at(10));
 
   s21_map.insert_or_assign(11, "eleven");
   std_map.insert_or_assign(11, "eleven");
   EXPECT_EQ("eleven", s21_map.at(11));
-  EXPECT_EQ(s21_map.size(), 2);
+  EXPECT_EQ(s21_map.size(), 2UL);
   EXPECT_EQ(s21_map.at(11), std_map.at(11));
 
   s21_map.insert_or_assign(11, "11");
   std_map.insert_or_assign(11, "11");
-  EXPECT_EQ(s21_map.size(), 2);
+  EXPECT_EQ(s21_map.size(), 2UL);
   EXPECT_EQ(s21_map.at(11), std_map.at(11));
 }
 
