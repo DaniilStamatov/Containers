@@ -1,12 +1,14 @@
 GCC = g++ -Wall -Wextra -Werror -std=c++17
 LIBS = $(shell pkg-config --libs --cflags gtest)
 OS = $(shell uname)
+FILES = $(wildcard containers/*.h tests/*.cc tests/*.h)
+TESTS = tests/vector.cc
 
 test: clean
 ifeq ($(OS),Linux)
-	$(GCC) -D LIN test.cpp $(LIBS) && ./a.out
+	$(GCC) -D LIN $(TESTS) $(LIBS) && ./a.out
 else
-	$(GCC) test.cpp $(LIBS) && ./a.out
+	$(GCC) $(TESTS) $(LIBS) && ./a.out
 endif
 
 gcov_report: clean
@@ -20,18 +22,24 @@ clean:
 	rm -rf *.gcda *.gcno *.out *.info report
 
 format:
-	clang-format -i --style=Google *.hpp *.cpp
+	clang-format -i --style=Google *.h *.cc
 
 style:
-	clang-format -n --Werror --style=Google *.hpp
-	cppcheck --enable=all --suppress=missingIncludeSystem *.hpp *.cpp
+	clang-format -n --Werror --style=Google $(FILES)
+	cppcheck --enable=all --suppress=missingIncludeSystem $(FILES)
+
+fix:
+	clang-format -i --Werror --style=Google $(FILES)
+	cppcheck --enable=all --suppress=missingIncludeSystem $(FILES)
 
 memory: clean
-	$(GCC) -fsanitize=address test.cpp $(LIBS) && ./a.out
-	rm ./a.out
-	$(GCC) test.cpp $(LIBS)
+	$(GCC) $(TESTS) $(LIBS)
 ifeq ($(OS),Linux)
 	valgrind --tool=memcheck --leak-check=yes --track-origins=yes -s --trace-children=yes --track-fds=yes --show-leak-kinds=all ./a.out
 else
 	leaks --atExit -- ./a.out
+endif
+	rm ./a.out
+ifeq ($(OS),Linux)
+	$(GCC) -fsanitize=address $(TESTS) $(LIBS) && ./a.out
 endif

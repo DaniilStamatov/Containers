@@ -1,14 +1,15 @@
-#pragma once
+#ifndef S21_VECTOR_H
+#define S21_VECTOR_H
 
+#include <cmath>
 #include <initializer_list>
-#include <iostream>
-#include <string>
 #include <typeinfo>
 
 namespace s21 {
 template <typename T>
 class vector {
  public:
+  /*---------- VECTOR MEMBER TYPE ----------*/
   using value_type = T;   // type of an element (T is template parameter)
   using reference = T &;  // type of the reference to an element
   using const_reference = const T &;  // type of the constant reference
@@ -24,45 +25,53 @@ class vector {
   value_type *arr_;
 
  public:
-  vector();  // default constructor, creates empty vector
-  explicit vector(
-      size_type n);  // parameterized constructor, creates the vector of size n
-  vector(std::initializer_list<value_type> const
-             &items);       // initializer list constructor, creates vector
-                            // initizialized using std::initializer_list
+  /*---------- VECTOR MEMBER FUNCTIONS ----------*/
+  // default constructor, creates empty vector
+  vector();
+  // parameterized constructor, creates the vector of size n
+  explicit vector(size_type n);
+  /* initializer list constructor, creates vector initizialized using
+  std::initializer_list */
+  vector(std::initializer_list<value_type> const &items);
   vector(const vector &v);  // copy constructor
   vector(vector &&v);       // move constructor
   ~vector();                // destructor
-  vector &operator=(
-      std::initializer_list<value_type> const
-          &items);  // assignment operator overload for copying object
-  vector &operator=(
-      vector &v);  // assignment operator overload for copying object
-  vector &operator=(
-      vector &&v);  // assignment operator overload for moving object
+  // assignment operator overload for copying object
+  vector &operator=(std::initializer_list<value_type> const &items);
+  // assignment operator overload for copying object
+  vector &operator=(vector &v);
+  // assignment operator overload for moving object
+  vector &operator=(vector &&v);
 
+  /*---------- VECTOR ELEMENT ACCESS ----------*/
   reference at(size_type pos);  // access specified element with bounds checking
   reference operator[](size_type pos);  // access specified element
   const_reference front();              // access the first element
   const_reference back();               // access the last element
   value_type *data();                   // direct access to the underlying array
-  iterator begin();                     // returns an iterator to the beginning
-  iterator end();                       // returns an iterator to the end
-  bool empty();                         // checks whether the container is empty
-  size_type size();                     // returns the number of elements
+
+  /*---------- VECTOR ITERATORS ----------*/
+  iterator begin();  // returns an iterator to the beginning
+  iterator end();    // returns an iterator to the end
+
+  /*---------- VECTOR CAPACITY ----------*/
+  bool empty();          // checks whether the container is empty
+  size_type size();      // returns the number of elements
   size_type max_size();  // returns the maximum possible number of elements
-  void reserve(
-      size_type size);   // allocate storage of size elements and copies current
-                         // array elements to a newely allocated array
-  size_type capacity();  // returns the number of elements that can be held in
-                         // currently allocated storage
+  /* allocate storage of size elements and copies current array elements to a
+  newely allocated array */
+  void reserve(size_type size);
+  /* returns the number of elements that can be held in currently allocated
+  storage */
+  size_type capacity();
   void shrink_to_fit();  // reduces memory usage by freeing unused memory
-  void clear();          // clears the contents
-  iterator insert(
-      iterator pos,
-      const_reference value);  // inserts elements into concrete pos and returns
-                               // the iterator that points to the new element
-  void erase(iterator pos);    // erases element at pos
+
+  /*---------- VECTOR MODIFIERS ----------*/
+  void clear();  // clears the contents
+  /* inserts elements into concrete pos and returns the iterator that points to
+  the new element */
+  iterator insert(iterator pos, const_reference value);
+  void erase(iterator pos);               // erases element at pos
   void push_back(const_reference value);  // adds an element to the end
   void pop_back();                        // removes the last element
   void swap(vector &other);               // swaps the contents
@@ -79,8 +88,10 @@ s21::vector<T>::vector(size_type n) : m_size_(n), m_capacity_(n) {
   if (n > this->max_size())  // подача отрицательного n - переполнение
     throw std::length_error("cannot create s21::vector larger than max_size()");
   if (typeid(value_type) ==
-      typeid(bool &))  // bool выделяет блоками по 64 байта
-    m_capacity_ = n / 64 * 64 + ((n % 64) > 0 ? 64 : 0);
+      typeid(
+          bool &))  // bool выделяет блоками, кратными машинному слову системы
+    m_capacity_ =
+        n / __WORDSIZE * __WORDSIZE + ((n % __WORDSIZE) > 0 ? __WORDSIZE : 0);
   arr_ = new value_type[m_capacity_]{};
 }
 
@@ -89,17 +100,27 @@ s21::vector<T>::vector(std::initializer_list<value_type> const &items)
     : m_size_(items.size()),
       m_capacity_(items.size()),
       arr_(new T[items.size()]{}) {
-  for (size_t i = 0; i < m_size_; i++) {
+  for (size_type i = 0; i < m_size_; i++) {
     arr_[i] = items.begin()[i];
   }
 }
+// template <class T>
+// vector<T>::vector(std::initializer_list<value_type> const& items)
+//     : capacity_(items.size()), size_(0), data_(new value_type[capacity_]{}) {
+//   for (auto it = items.begin(); it != items.end(); ++it, ++size_) {
+//     data_[size_] = value_type(*it);
+//   }
+//   if (typeid(value_type) == typeid(bool&))
+//     capacity_ = this->size_ / __WORDSIZE * __WORDSIZE +
+//                 ((this->size_ % __WORDSIZE) > 0 ? __WORDSIZE : 0);
+// };
 
 template <typename T>
 s21::vector<T>::vector(const vector &v)
     : m_size_(v.m_size_),
       m_capacity_(v.m_capacity_),
-      arr_(new T[v.m_capacity_]{}) {
-  for (size_t i = 0; i < m_size_; i++) {
+      arr_(new value_type[v.m_capacity_]{}) {
+  for (size_type i = 0; i < m_size_; i++) {
     arr_[i] = v.arr_[i];
   }
 }
@@ -130,7 +151,7 @@ typename s21::vector<T> &s21::vector<T>::operator=(
     std::initializer_list<value_type> const &items) {
   m_size_ = items.size();
   if (m_capacity_ <= items.size()) {  // if capacity of vector is < than list,
-                                      // than alloc new memory
+                                      // then alloc new memory
     delete[] arr_;
     m_capacity_ = items.size();
     arr_ = new T[m_capacity_]{};
@@ -174,12 +195,9 @@ typename s21::vector<T> &s21::vector<T>::operator=(vector &&v) {
 
 template <typename T>
 typename s21::vector<T>::reference s21::vector<T>::at(size_type pos) {
-  if (pos > m_capacity_) {
+  if (pos > m_size_) {
     throw std::out_of_range("Index pos >= this->size()");
   }
-  // else if (pos < 0) {
-  //   throw std::out_of_range("Index pos <= 0");
-  // }
   return arr_[pos];
 }
 
@@ -205,12 +223,12 @@ typename s21::vector<T>::value_type *s21::vector<T>::data() {
 
 template <typename T>
 typename s21::vector<T>::iterator s21::vector<T>::begin() {
-  return arr_;
+  return (iterator)(arr_);
 }
 
 template <typename T>
 typename s21::vector<T>::iterator s21::vector<T>::end() {
-  return &(arr_[this->size()]);
+  return (iterator)(arr_ + m_size_);
 }
 
 template <typename T>
@@ -225,12 +243,15 @@ typename s21::vector<T>::size_type s21::vector<T>::size() {
 
 template <typename T>
 typename s21::vector<T>::size_type s21::vector<T>::max_size() {
-  auto pow = [](size_type x) {
-    size_type out = 2;
-    for (size_type i = 1; i < x; i++) out *= 2;
-    return out;
-  };
-  return pow(sizeof(void *) * 8 - 1) / (sizeof(T) * 8) * 8 - 1;
+  // auto pow = [](size_type x) {
+  //   size_type out = 2;
+  //   for (size_type i = 1; i < x; i++) out *= 2;
+  //   return out;
+  // };
+  // return pow(sizeof(void *) * 8 - 1) / (sizeof(T) * 8) * 8 - 1;
+  size_type reserve_size = 1;
+  if (typeid(value_type) == typeid(bool &)) reserve_size = 64;
+  return (((powl(2, __WORDSIZE) / sizeof(value_type)) / 2 - reserve_size));
 }
 
 template <typename T>
@@ -258,7 +279,7 @@ template <typename T>
 void s21::vector<T>::shrink_to_fit() {
   s21::vector<value_type> temp(m_size_);
   for (size_type i = 0; i < m_size_; i++) {
-    temp[i] = this->arr_[i];
+    temp[i] = value_type(arr_[i]);
   }
   this->swap(temp);
 }
@@ -266,18 +287,30 @@ void s21::vector<T>::shrink_to_fit() {
 template <typename T>
 void s21::vector<T>::clear() {
   if (typeid(value_type) == typeid(bool &))
-    m_capacity_ = m_size_ / 64 * 64 + ((m_size_ % 64) > 0 ? 64 : 0);
+    m_capacity_ = m_size_ / __WORDSIZE * __WORDSIZE +
+                  ((m_size_ % __WORDSIZE) > 0 ? __WORDSIZE : 0);
   m_size_ = 0;
 }
 
 template <typename T>
 typename s21::vector<T>::iterator s21::vector<T>::insert(
     iterator pos, const_reference value) {
+  size_type point = std::distance(begin(), pos);
+  if (m_capacity_ == 0)
+    reserve(1);
+  else if (m_size_ == m_capacity_)
+    reserve(m_capacity_ * 2);
+  for (size_t i = m_size_; i < point; i--) {
+    arr_[i] = arr_[i - 1];
+  }
+  arr_[point] = value;
   m_size_++;
+  return (iterator)(arr_ + point);
 }
 
 template <typename T>
 void s21::vector<T>::erase(iterator pos) {
+  size_type defference = pos - this.begin();
   m_size_--;
 }
 
@@ -297,3 +330,5 @@ void s21::vector<T>::swap(vector &other) {
   *this = std::move(other);
   other = std::move(temp);
 }
+
+#endif

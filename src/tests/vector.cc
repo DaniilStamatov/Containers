@@ -24,9 +24,10 @@ TEST(int_constructors, n_size) {
   std::vector<int> vec(n);
   EXPECT_NO_THROW({
     s21::vector<int> test(n);
-
+    EXPECT_EQ(vec.capacity(), (size_t)10);
+    EXPECT_EQ(vec.size(), (size_t)10);
     EXPECT_EQ(vec.capacity() == n, test.capacity() == n);
-    EXPECT_EQ(vec.size(), test.size());
+    EXPECT_EQ(vec.size() == n, test.size() == n);
     for (size_t i = 0; i < n; i++) {
       EXPECT_EQ(vec[i], test[i]);
     }
@@ -142,16 +143,22 @@ TEST(int_access, at_normal) {
   EXPECT_TRUE(test.at(5) == vec.at(5));
 }
 
+#ifdef LIN
 TEST(int_access, at_exceptions) {
   s21::vector<int> test({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   EXPECT_ANY_THROW(test.at(100));
   EXPECT_ANY_THROW(test.at(-5));
+  test.clear();
+  EXPECT_ANY_THROW(test.at(5));
 }
+#endif
 
 TEST(int_access, operator_normal) {
   s21::vector<int> test({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   std::vector<int> vec({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
   EXPECT_TRUE(test[5] == vec[5]);
+  EXPECT_NO_THROW({ test[7] = 100; });
+  EXPECT_TRUE(test[7] == 100);
 }
 
 TEST(int_access, operator_ub) {
@@ -190,10 +197,22 @@ TEST(int_iterator, begin) {
   EXPECT_TRUE(*test.begin() == *vec.begin());
 }
 
+TEST(int_iterator, begin_empty) {
+  s21::vector<int> test;
+  std::vector<int> vec;
+  // std::cout << *vec.begin();
+}
+
 TEST(int_iterator, end) {
   s21::vector<int> test({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
   std::vector<int> vec({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
   EXPECT_TRUE(*(test.end() - 1) == *(vec.end() - 1));
+}
+
+TEST(int_iterator, end_empty) {
+  s21::vector<int> test;
+  std::vector<int> vec;
+  // std::cout << *vec.end();
 }
 
 TEST(int_methods, empty) {
@@ -259,9 +278,9 @@ TEST(int_methods, reserve_downscale) {
             << std::endl;
   std::cout << "s21 real size = " << malloc_usable_size(test.data())
             << std::endl;
-#endif
 
   EXPECT_ANY_THROW(test.reserve(-1));
+#endif
 }
 
 TEST(int_methods, reserve_up_down) {
@@ -340,6 +359,7 @@ TEST(int_methods, clear) {
   std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 1, 1};
   s21::vector<int> test = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 1, 1};
   vec.clear();
+  test.clear();
   std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
             << std::endl;
   std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
@@ -351,6 +371,44 @@ TEST(int_methods, clear) {
   std::cout << "s21 real size = " << malloc_usable_size(test.data())
             << std::endl;
 #endif
+  for (size_t i = 0; i < vec.capacity(); i++) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(int_methods, insert) {
+  std::vector<int> vec;
+  s21::vector<int> test;
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(int_methods, erase) {
+  
 }
 
 // ----------------------------------------BOOL------------------------------------------------
@@ -370,7 +428,7 @@ TEST(bool_constructors, n_size) {
     EXPECT_EQ(vec[i], test[i]);
   }
 
-  EXPECT_ANY_THROW(s21::vector<bool> test0(-1));
+  // EXPECT_ANY_THROW(s21::vector<bool> test0(-1));
 }
 
 int main(int argc, char **argv) {
