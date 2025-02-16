@@ -22,14 +22,10 @@ clean:
 	rm -rf *.gcda *.gcno *.out *.info report
 
 format:
-	clang-format -i --style=Google *.h *.cc
+	clang-format -i --style=Google $(FILES)
 
 style:
 	clang-format -n --Werror --style=Google $(FILES)
-	cppcheck --enable=all --suppress=missingIncludeSystem $(FILES)
-
-fix:
-	clang-format -i --Werror --style=Google $(FILES)
 	cppcheck --enable=all --suppress=missingIncludeSystem $(FILES)
 
 memory: clean

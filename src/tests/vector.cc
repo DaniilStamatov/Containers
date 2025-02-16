@@ -197,12 +197,6 @@ TEST(int_iterator, begin) {
   EXPECT_TRUE(*test.begin() == *vec.begin());
 }
 
-TEST(int_iterator, begin_empty) {
-  s21::vector<int> test;
-  std::vector<int> vec;
-  // std::cout << *vec.begin();
-}
-
 TEST(int_iterator, end) {
   s21::vector<int> test({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
   std::vector<int> vec({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
@@ -408,7 +402,47 @@ TEST(int_methods, insert) {
 }
 
 TEST(int_methods, erase) {
-  
+  //////////////////////////////////////////////////////////////////////////////////
+}
+
+TEST(int_methods, push_back_void) {
+  std::vector<int> vec;
+  s21::vector<int> test;
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.push_back(1);
+  test.push_back(1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(test[0], 1);
+}
+
+TEST(int_methods, push_back_initlist) {
+  std::vector<int> vec = {1, 2, 3};
+  s21::vector<int> test = {1, 2, 3};
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.push_back(4);
+  test.push_back(4);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(test[3], 4);
+}
+
+TEST(int_methods, push_back_n) {
+  std::vector<int> vec(10);
+  s21::vector<int> test(10);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.push_back(5);
+  test.push_back(5);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(test[10], 5);
+}
+
+TEST(int_methods, pop_back) {
+  //////////////////////////////////////////////////////////////////////////////////
 }
 
 // ----------------------------------------BOOL------------------------------------------------

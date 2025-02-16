@@ -243,12 +243,6 @@ typename s21::vector<T>::size_type s21::vector<T>::size() {
 
 template <typename T>
 typename s21::vector<T>::size_type s21::vector<T>::max_size() {
-  // auto pow = [](size_type x) {
-  //   size_type out = 2;
-  //   for (size_type i = 1; i < x; i++) out *= 2;
-  //   return out;
-  // };
-  // return pow(sizeof(void *) * 8 - 1) / (sizeof(T) * 8) * 8 - 1;
   size_type reserve_size = 1;
   if (typeid(value_type) == typeid(bool &)) reserve_size = 64;
   return (((powl(2, __WORDSIZE) / sizeof(value_type)) / 2 - reserve_size));
@@ -316,7 +310,7 @@ void s21::vector<T>::erase(iterator pos) {
 
 template <typename T>
 void s21::vector<T>::push_back(const_reference value) {
-  m_size_++;
+  this->insert(this->end(), value);
 }
 
 template <typename T>
