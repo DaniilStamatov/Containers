@@ -294,7 +294,7 @@ typename s21::vector<T>::iterator s21::vector<T>::insert(
     reserve(1);
   else if (m_size_ == m_capacity_)
     reserve(m_capacity_ * 2);
-  for (size_t i = m_size_; i < point; i--) {
+  for (size_t i = m_size_; i > point; i--) {
     arr_[i] = arr_[i - 1];
   }
   arr_[point] = value;
@@ -304,7 +304,10 @@ typename s21::vector<T>::iterator s21::vector<T>::insert(
 
 template <typename T>
 void s21::vector<T>::erase(iterator pos) {
-  size_type defference = pos - this.begin();
+  size_type point = std::distance(begin(), pos);
+  for (size_type i = point; m_size_ > 0 && i < m_size_ - 1; ++i) {
+    arr_[i] = arr_[i + 1];
+  }
   m_size_--;
 }
 
@@ -315,7 +318,7 @@ void s21::vector<T>::push_back(const_reference value) {
 
 template <typename T>
 void s21::vector<T>::pop_back() {
-  m_size_--;
+  this->erase(this->end());
 }
 
 template <typename T>

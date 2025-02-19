@@ -2,7 +2,7 @@ GCC = g++ -Wall -Wextra -Werror -std=c++17
 LIBS = $(shell pkg-config --libs --cflags gtest)
 OS = $(shell uname)
 FILES = $(wildcard containers/*.h tests/*.cc tests/*.h)
-TESTS = tests/vector.cc
+TESTS = tests/*.cc
 
 test: clean
 ifeq ($(OS),Linux)
@@ -12,9 +12,9 @@ else
 endif
 
 gcov_report: clean
-	$(GCC) --coverage test.cpp $(LIBS) && ./a.out
+	$(GCC) --coverage $(TESTS) $(LIBS) && ./a.out
 	lcov --capture --directory . -o coverage.info --ignore-errors inconsistent --rc branch_coverage=1
-	lcov --extract coverage.info 'src/*.hpp' -o coverage_filter.info
+	lcov --extract coverage.info 'containers/s21_vector.h' -o coverage_filter.info
 	genhtml --output-directory report --legend coverage_filter.info
 	open report/index.html
 
@@ -29,7 +29,7 @@ style:
 	cppcheck --enable=all --suppress=missingIncludeSystem $(FILES)
 
 memory: clean
-	$(GCC) $(TESTS) $(LIBS)
+	$(GCC) -g $(TESTS) $(LIBS)
 ifeq ($(OS),Linux)
 	valgrind --tool=memcheck --leak-check=yes --track-origins=yes -s --trace-children=yes --track-fds=yes --show-leak-kinds=all ./a.out
 else
