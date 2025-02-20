@@ -39,7 +39,9 @@ TEST(int_constructors, n_size) {
   EXPECT_NO_THROW({
     s21::vector<int> s21_vector(1300);
     std::vector<int> std_vector(1300);
-    EXPECT_EQ(std_vector.capacity() == n, s21_vector.capacity() == n);
+    EXPECT_EQ(std_vector.capacity(), (size_t)1300);
+    EXPECT_EQ(std_vector.size(), (size_t)1300);
+    EXPECT_EQ(std_vector.capacity(), s21_vector.capacity());
     EXPECT_EQ(std_vector.size(), s21_vector.size());
     for (size_t i = 0; i < s21_vector.size(); ++i) {
       EXPECT_TRUE(s21_vector[i] == std_vector[i]);
@@ -205,12 +207,6 @@ TEST(int_iterator, end) {
   EXPECT_TRUE(*(test.end() - 1) == *(vec.end() - 1));
 }
 
-TEST(int_iterator, end_empty) {
-  s21::vector<int> test;
-  std::vector<int> vec;
-  // std::cout << *vec.end();
-}
-
 TEST(int_methods, empty) {
   s21::vector<int> test;
   std::vector<int> vec;
@@ -358,10 +354,10 @@ TEST(int_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-            << std::endl;
-  std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-            << std::endl;
+  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
+  //           << std::endl;
+  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
+  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -548,7 +544,10 @@ TEST(float_constructors, n_size) {
   EXPECT_NO_THROW({
     s21::vector<float> s21_vector(1300);
     std::vector<float> std_vector(1300);
-    EXPECT_EQ(std_vector.capacity() == n, s21_vector.capacity() == n);
+    EXPECT_EQ(std_vector.capacity(), (size_t)1300);
+    EXPECT_EQ(std_vector.size(), (size_t)1300);
+    EXPECT_EQ(std_vector.capacity(), s21_vector.capacity());
+    EXPECT_EQ(std_vector.size(), s21_vector.size());
     EXPECT_EQ(std_vector.size(), s21_vector.size());
     for (size_t i = 0; i < s21_vector.size(); ++i) {
       EXPECT_TRUE(s21_vector[i] == std_vector[i]);
@@ -714,12 +713,6 @@ TEST(float_iterator, end) {
   EXPECT_TRUE(*(test.end() - 1) == *(vec.end() - 1));
 }
 
-TEST(float_iterator, end_empty) {
-  s21::vector<float> test;
-  std::vector<float> vec;
-  // std::cout << *vec.end();
-}
-
 TEST(float_methods, empty) {
   s21::vector<float> test;
   std::vector<float> vec;
@@ -867,10 +860,10 @@ TEST(float_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-            << std::endl;
-  std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-            << std::endl;
+  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
+  //           << std::endl;
+  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
+  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -1057,7 +1050,10 @@ TEST(double_constructors, n_size) {
   EXPECT_NO_THROW({
     s21::vector<double> s21_vector(1300);
     std::vector<double> std_vector(1300);
-    EXPECT_EQ(std_vector.capacity() == n, s21_vector.capacity() == n);
+    EXPECT_EQ(std_vector.capacity(), (size_t)1300);
+    EXPECT_EQ(std_vector.size(), (size_t)1300);
+    EXPECT_EQ(std_vector.capacity(), s21_vector.capacity());
+    EXPECT_EQ(std_vector.size(), s21_vector.size());
     EXPECT_EQ(std_vector.size(), s21_vector.size());
     for (size_t i = 0; i < s21_vector.size(); ++i) {
       EXPECT_TRUE(s21_vector[i] == std_vector[i]);
@@ -1223,12 +1219,6 @@ TEST(double_iterator, end) {
   EXPECT_TRUE(*(test.end() - 1) == *(vec.end() - 1));
 }
 
-TEST(double_iterator, end_empty) {
-  s21::vector<double> test;
-  std::vector<double> vec;
-  // std::cout << *vec.end();
-}
-
 TEST(double_methods, empty) {
   s21::vector<double> test;
   std::vector<double> vec;
@@ -1376,10 +1366,10 @@ TEST(double_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-            << std::endl;
-  std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-            << std::endl;
+  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
+  //           << std::endl;
+  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
+  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -1566,7 +1556,10 @@ TEST(char_constructors, n_size) {
   EXPECT_NO_THROW({
     s21::vector<char> s21_vector(1300);
     std::vector<char> std_vector(1300);
-    EXPECT_EQ(std_vector.capacity() == n, s21_vector.capacity() == n);
+    EXPECT_EQ(std_vector.capacity(), (size_t)1300);
+    EXPECT_EQ(std_vector.size(), (size_t)1300);
+    EXPECT_EQ(std_vector.capacity(), s21_vector.capacity());
+    EXPECT_EQ(std_vector.size(), s21_vector.size());
     EXPECT_EQ(std_vector.size(), s21_vector.size());
     for (size_t i = 0; i < s21_vector.size(); ++i) {
       EXPECT_TRUE(s21_vector[i] == std_vector[i]);
@@ -1732,12 +1725,6 @@ TEST(char_iterator, end) {
   EXPECT_TRUE(*(test.end() - 1) == *(vec.end() - 1));
 }
 
-TEST(char_iterator, end_empty) {
-  s21::vector<char> test;
-  std::vector<char> vec;
-  // std::cout << *vec.end();
-}
-
 TEST(char_methods, empty) {
   s21::vector<char> test;
   std::vector<char> vec;
@@ -1885,10 +1872,10 @@ TEST(char_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-            << std::endl;
-  std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-            << std::endl;
+  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
+  //           << std::endl;
+  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
+  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -2048,20 +2035,525 @@ TEST(char_methods, pop_back_void) {
 
 // ----------------------------------------BOOL------------------------------------------------
 
-TEST(bool_constructors, n_size) {
-  size_t n = 67;
-  std::vector<bool> vec(n);
-  s21::vector<bool> test(n);
+TEST(bool_constructors, default) {
+  std::vector<bool> vec;
+  EXPECT_NO_THROW({
+    s21::vector<bool> test;
+    EXPECT_EQ(vec.capacity(), test.capacity());
+    EXPECT_EQ(vec.size(), test.size());
+  });
+}
 
-  std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-            << std::endl;
-  std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-            << std::endl;
-  EXPECT_EQ(vec.capacity() == n, test.capacity() == n);
+TEST(bool_constructors, n_size) {
+  size_t n = 10;
+  std::vector<bool> vec(n);
+  EXPECT_NO_THROW({
+    s21::vector<bool> test(n);
+    EXPECT_EQ(vec.capacity(), (size_t)__WORDSIZE);
+    EXPECT_EQ(vec.size(), (size_t)10);
+    EXPECT_EQ(vec.capacity() == n, test.capacity() == n);
+    EXPECT_EQ(vec.size() == n, test.size() == n);
+    for (size_t i = 0; i < n; i++) {
+      EXPECT_EQ(vec[i], test[i]);
+    }
+  });
+
+  // expected to be large
+  EXPECT_NO_THROW({
+    s21::vector<bool> s21_vector(1300);
+    std::vector<bool> std_vector(1300);
+    size_t real_cap = 1300 / __WORDSIZE * __WORDSIZE +
+                      ((1300 % __WORDSIZE) > 0 ? __WORDSIZE : 0);
+    EXPECT_EQ(std_vector.capacity(), real_cap);
+    EXPECT_EQ(std_vector.size(), (size_t)1300);
+    EXPECT_EQ(std_vector.capacity(), s21_vector.capacity());
+    EXPECT_EQ(std_vector.size(), s21_vector.size());
+    EXPECT_EQ(std_vector.size(), s21_vector.size());
+    for (size_t i = 0; i < s21_vector.size(); ++i) {
+      EXPECT_TRUE(s21_vector[i] == std_vector[i]);
+    }
+  });
+
+  EXPECT_ANY_THROW(s21::vector<bool> test0(-1));
+}
+
+TEST(bool_constructors, init_list_1) {
+  std::vector<bool> vec({true, false, true, false});
+  EXPECT_NO_THROW({
+    s21::vector<bool> test({true, false, true, false});
+
+    EXPECT_EQ(vec.capacity(), test.capacity());
+    EXPECT_EQ(vec.size(), test.size());
+    for (size_t i = 0; i < vec.size(); i++) {
+      EXPECT_EQ(vec[i], test[i]);
+    }
+  });
+}
+
+TEST(bool_constructors, init_list_2) {
+  std::vector<bool> vec({});
+  EXPECT_NO_THROW({
+    s21::vector<bool> test({});
+
+    EXPECT_EQ(vec.capacity(), test.capacity());
+    EXPECT_EQ(vec.size(), test.size());
+    for (size_t i = 0; i < vec.size(); i++) {
+      EXPECT_EQ(vec[i], test[i]);
+    }
+  });
+}
+
+TEST(bool_constructors, copy) {
+  std::vector<bool> vec = {false, true, true, false};
+  std::vector<bool> vec1(vec);
+
+  s21::vector<bool> test = {false, true, true, false};
+  EXPECT_NO_THROW({
+    s21::vector<bool> test1(test);
+
+    EXPECT_EQ(vec1.capacity(), test1.capacity());
+    EXPECT_EQ(vec1.size(), test1.size());
+    for (size_t i = 0; i < vec.size(); i++) {
+      EXPECT_EQ(vec1[i], test1[i]);
+    }
+    // EXPECT_EQ(vec1.data() != vec.data(), test1.data() != test.data());
+  });
+}
+
+TEST(bool_constructors, move) {
+  s21::vector<bool> test = {false, false};
+  size_t size1 = test.size(), capacity1 = test.capacity();
+  bool *p = test.data();
+  EXPECT_NO_THROW({
+    s21::vector<bool> test1(std::move(test));
+    EXPECT_EQ(capacity1 == test1.capacity(), size1 == test1.size());
+
+    // проверка на то, что участок памяти не изменился в обоих случаях
+    EXPECT_TRUE(test1.data() == p);
+  });
+}
+
+TEST(bool_operator, init_list_void) {
+  std::vector<bool> vec = {false, false, false, true};
+  s21::vector<bool> test = {false, false, false, true};
+  EXPECT_EQ(vec.size() == 4, test.size() == 4);
+  EXPECT_EQ(vec.capacity() == 4, test.capacity() == 4);
+}
+
+TEST(bool_operator, init_list_n) {
+  std::vector<bool> vec(10);
+  s21::vector<bool> test(10);
+  vec = {true, true, false, false};
+  test = {true, true, false, false};
+  EXPECT_EQ(vec.size() == 4, test.size() == 4);
+  EXPECT_EQ(vec.capacity() == 4, test.capacity() == 4);
+}
+
+TEST(bool_operator, copy) {
+  s21::vector<bool> test1(
+      {false, true, false, true, false, true, false, true, true, false});
+  s21::vector<bool> test2;
+  test2 = test1;
+  for (size_t i = 0; i < test1.size(); ++i) {
+    EXPECT_TRUE(test1[i] == test2[i]);
+  }
+}
+
+TEST(bool_operator, move) {
+  s21::vector<bool> test1(
+      {false, true, true, true, false, false, false, true, true, false});
+  s21::vector<bool> test2;
+  bool *p = test1.data();
+  test2 = std::move(test1);
+
+  EXPECT_TRUE(test2.data() == p);
+}
+
+TEST(bool_access, at_normal) {
+  s21::vector<bool> test({false, false, true, true, false, true, false});
+  std::vector<bool> vec({false, false, true, true, false, true, false});
+  EXPECT_TRUE(test.at(5) == vec.at(5));
+}
+
+#ifdef LIN
+TEST(bool_access, at_exceptions) {
+  s21::vector<bool> test({false, false, true});
+  EXPECT_ANY_THROW(test.at(100));
+  EXPECT_ANY_THROW(test.at(-5));
+  test.clear();
+  EXPECT_ANY_THROW(test.at(5));
+}
+#endif
+
+TEST(bool_access, operator_normal) {
+  s21::vector<bool> test({true, false, false, true, true});
+  std::vector<bool> vec({true, false, false, true, true});
+  EXPECT_TRUE(test[5] == vec[5]);
+  EXPECT_NO_THROW({ test[3] = false; });
+  EXPECT_TRUE(test[7] == false);
+}
+
+TEST(bool_access, operator_ub) {
+  s21::vector<bool> test({true, false, true, true, false});
+  std::vector<bool> vec({true, false, true, true, false});
+  EXPECT_NO_THROW(test[-1]);
+  EXPECT_NO_THROW(test[30]);
+}
+
+TEST(bool_access, front) {
+  s21::vector<bool> test({false, false, false, false, false});
+  std::vector<bool> vec({false, false, false, false, false});
+  int my = test.front();
+  int std = vec.front();
+  EXPECT_TRUE(my == std);
+}
+
+TEST(bool_access, back) {
+  s21::vector<bool> test({false, true, true, false});
+  std::vector<bool> vec({false, true, true, false});
+  int my = test.back();
+  int std = vec.back();
+  EXPECT_TRUE(my == std);
+}
+
+// не работает т.к. булевый вектор
+// TEST(bool_access, data) {
+//   s21::vector<bool> test({false, true, false, false, true, false, true, true,
+//   false}); std::vector<bool> vec({false, true, false, false, true, false,
+//   true, true, false}); EXPECT_TRUE(*test.data() == *vec.data());
+//   EXPECT_TRUE(*(test.data() + 3) == *(vec.data() + 3));
+// }
+
+TEST(bool_iterator, begin) {
+  s21::vector<bool> test(
+      {false, true, false, false, true, false, true, true, false});
+  std::vector<bool> vec(
+      {false, true, false, false, true, false, true, true, false});
+  EXPECT_TRUE(*test.begin() == *vec.begin());
+}
+
+TEST(bool_iterator, end) {
+  s21::vector<bool> test(
+      {false, true, false, false, true, false, true, true, false});
+  std::vector<bool> vec(
+      {false, true, false, false, true, false, true, true, false});
+  EXPECT_TRUE(*(test.end() - 1) == *(vec.end() - 1));
+}
+
+TEST(bool_methods, empty) {
+  s21::vector<bool> test;
+  std::vector<bool> vec;
+  EXPECT_EQ(test.empty() == true, vec.empty() == true);
+  test = {false, true, false, false, true, false, true, true, false};
+  vec = {false, true, false, false, true, false, true, true, false};
+  EXPECT_EQ(test.empty() == false, vec.empty() == false);
+}
+
+TEST(bool_methods, size) {
+  s21::vector<bool> test;
+  std::vector<bool> vec;
+  EXPECT_TRUE(test.size() == vec.size());
+  test = {false, true, false, false, true, false, true, true, false};
+  vec = {false, true, false, false, true, false, true, true, false};
+  EXPECT_TRUE(test.size() == vec.size());
+}
+
+TEST(bool_methods, max_size) {
+  std::vector<bool> vec;
+  s21::vector<bool> test;
+  EXPECT_EQ(vec.max_size(), test.max_size());
+
+  vec = {true, false, true};
+  test = {false, false, false};
+  EXPECT_EQ(vec.max_size(), test.max_size());
+}
+
+TEST(bool_methods, reserve_upscale) {
+  s21::vector<bool> test(
+      {false, true, false, false, true, false, true, true, false});
+  std::vector<bool> vec(
+      {false, true, false, false, true, false, true, true, false});
   EXPECT_EQ(vec.size(), test.size());
-  for (size_t i = 0; i < n; i++) {
+  EXPECT_EQ(vec.capacity(), test.capacity());
+
+  test.reserve(test.size() * 2);
+  vec.reserve(vec.size() * 2);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+#ifdef LIN
+  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
+  std::cout << "std real size = " << malloc_usable_size(vec.data())
+            << std::endl;
+  std::cout << "s21 real size = " << malloc_usable_size(test.data())
+            << std::endl;
+#endif
+}
+
+TEST(bool_methods, reserve_downscale) {
+  s21::vector<bool> test(
+      {false, true, false, false, true, false, true, true, false});
+  std::vector<bool> vec(
+      {false, true, false, false, true, false, true, true, false});
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+
+  test.reserve(test.size() / 2);
+  vec.reserve(vec.size() / 2);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+#ifdef LIN
+  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
+  std::cout << "std real size = " << malloc_usable_size(vec.data())
+            << std::endl;
+  std::cout << "s21 real size = " << malloc_usable_size(test.data())
+            << std::endl;
+
+  EXPECT_ANY_THROW(test.reserve(-1));
+#endif
+}
+
+TEST(bool_methods, reserve_up_down) {
+  s21::vector<bool> test(
+      {false, true, false, false, true, false, true, true, false});
+  std::vector<bool> vec(
+      {false, true, false, false, true, false, true, true, false});
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+
+  test.reserve(test.size() * 2);
+  vec.reserve(vec.size() * 2);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+#ifdef LIN
+  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
+  std::cout << "std real size = " << malloc_usable_size(vec.data())
+            << std::endl;
+  std::cout << "s21 real size = " << malloc_usable_size(test.data())
+            << std::endl;
+#endif
+  test.reserve(test.capacity() / 2);
+  vec.reserve(vec.capacity() / 2);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+#ifdef LIN
+  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
+  std::cout << "std real size = " << malloc_usable_size(vec.data())
+            << std::endl;
+  std::cout << "s21 real size = " << malloc_usable_size(test.data())
+            << std::endl;
+#endif
+  test.reserve(test.capacity());
+  vec.reserve(vec.capacity());
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(bool_methods, capacity) {
+  s21::vector<bool> test;
+  std::vector<bool> vec;
+  EXPECT_TRUE(test.capacity() == vec.capacity());
+  test.reserve(20), vec.reserve(20);
+  EXPECT_TRUE(test.capacity() == __WORDSIZE);
+  test = {false, true, false, false, true, false, true, true, false};
+  vec = {false, true, false, false, true, false, true, true, false};
+  EXPECT_TRUE(test.capacity() == __WORDSIZE);
+}
+
+TEST(bool_methods, shrink) {
+  std::vector<bool> vec = {false, true, false, false, true,
+                           false, true, true,  false};
+  s21::vector<bool> test = {false, true, false, false, true,
+                            false, true, true,  false};
+
+  vec.reserve(20);
+  test.reserve(20);
+  EXPECT_EQ(vec.capacity(), test.capacity());
+#ifdef LIN
+  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
+  std::cout << "std real size = " << malloc_usable_size(vec.data())
+            << std::endl;
+  std::cout << "s21 real size = " << malloc_usable_size(test.data())
+            << std::endl;
+#endif
+
+  vec.shrink_to_fit();
+  test.shrink_to_fit();
+  EXPECT_EQ(vec.capacity(), test.capacity());
+#ifdef LIN
+  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
+  std::cout << "std real size = " << malloc_usable_size(vec.data())
+            << std::endl;
+  std::cout << "s21 real size = " << malloc_usable_size(test.data())
+            << std::endl;
+#endif
+}
+
+TEST(bool_methods, clear) {
+  std::vector<bool> vec = {false, true, false, false, true,
+                           false, true, true,  false};
+  s21::vector<bool> test = {false, true, false, false, true,
+                            false, true, true,  false};
+  vec.clear();
+  test.clear();
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
+  //           << std::endl;
+  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
+  //           << std::endl;
+#ifdef LIN
+  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
+  std::cout << "std real size = " << malloc_usable_size(vec.data())
+            << std::endl;
+  std::cout << "s21 real size = " << malloc_usable_size(test.data())
+            << std::endl;
+#endif
+  for (size_t i = 0; i < vec.capacity(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
+}
 
-  // EXPECT_ANY_THROW(s21::vector<bool> test0(-1));
+TEST(bool_methods, insert_begin) {
+  std::vector<bool> vec;
+  s21::vector<bool> test;
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.insert(vec.begin(), 1);
+  test.insert(test.begin(), 1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(bool_methods, insert) {
+  std::vector<bool> vec = {true, true, true, false};
+  s21::vector<bool> test = {true, true, true, false};
+  vec.insert(vec.begin() + 2, 5);
+  test.insert(test.begin() + 2, 5);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  for (size_t i = 0; i < vec.capacity(); i++) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(bool_methods, insert_end) {
+  std::vector<bool> vec = {true, true, true, false};
+  s21::vector<bool> test = {true, true, true, false};
+  vec.insert(vec.end(), 5);
+  test.insert(test.end(), 5);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  for (size_t i = 0; i < vec.capacity(); i++) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(bool_methods, erase_void) {
+  std::vector<bool> vec;
+  s21::vector<bool> test;
+  vec.erase(vec.begin());
+  test.erase(test.begin());
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(bool_methods, erase) {
+  std::vector<bool> vec = {true, true, true, false, true};
+  s21::vector<bool> test = {true, true, true, false, true};
+  vec.erase(vec.begin() + 2);
+  test.erase(test.begin() + 2);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  for (size_t i = 0; i < vec.capacity(); i++) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(bool_methods, erase_end) {
+  std::vector<bool> vec = {true, true, true, false, true};
+  s21::vector<bool> test = {true, true, true, false, true};
+  vec.erase(vec.end());
+  test.erase(test.end());
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  for (size_t i = 0; i < vec.capacity(); i++) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(bool_methods, push_back_void) {
+  std::vector<bool> vec;
+  s21::vector<bool> test;
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.push_back(1);
+  test.push_back(1);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(test[0], 1);
+}
+
+TEST(bool_methods, push_back_initlist) {
+  std::vector<bool> vec = {true, true, true};
+  s21::vector<bool> test = {true, true, true};
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.push_back(4);
+  test.push_back(4);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(test[3], true);
+}
+
+TEST(bool_methods, push_back_n) {
+  std::vector<bool> vec(10);
+  s21::vector<bool> test(10);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  vec.push_back(5);
+  test.push_back(5);
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(test[10], true);
+}
+
+TEST(bool_methods, pop_back) {
+  std::vector<bool> vec = {true, true, true, false, true};
+  s21::vector<bool> test = {true, true, true, false, true};
+  vec.pop_back();
+  test.pop_back();
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  for (size_t i = 0; i < vec.capacity(); i++) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(bool_methods, pop_back_void) {
+  std::vector<bool> vec;
+  s21::vector<bool> test;
+  vec.pop_back();
+  test.pop_back();
+  EXPECT_EQ(vec.size(), test.size());
+  EXPECT_EQ(vec.capacity(), test.capacity());
 }

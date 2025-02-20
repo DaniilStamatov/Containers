@@ -32,6 +32,7 @@ class vector {
   explicit vector(size_type n);
   /* initializer list constructor, creates vector initizialized using
   std::initializer_list */
+  // cppcheck ругается на отсутствие explicit
   vector(std::initializer_list<value_type> const &items);
   vector(const vector &v);  // copy constructor
   vector(vector &&v);       // move constructor
@@ -97,13 +98,18 @@ s21::vector<T>::vector(size_type n) : m_size_(n), m_capacity_(n) {
 
 template <typename T>
 s21::vector<T>::vector(std::initializer_list<value_type> const &items)
-    : m_size_(items.size()),
-      m_capacity_(items.size()),
-      arr_(new T[items.size()]{}) {
-  for (size_type i = 0; i < m_size_; i++) {
+    : m_size_(items.size()), m_capacity_(items.size()) {
+  if (typeid(value_type) ==
+      typeid(
+          bool &))  // bool выделяет блоками, кратными машинному слову системы
+    m_capacity_ = m_size_ / __WORDSIZE * __WORDSIZE +
+                  ((m_size_ % __WORDSIZE) > 0 ? __WORDSIZE : 0);
+  arr_ = new value_type[m_capacity_]{};
+  for (size_type i = 0; i < m_size_; ++i) {
     arr_[i] = items.begin()[i];
   }
 }
+
 // template <class T>
 // vector<T>::vector(std::initializer_list<value_type> const& items)
 //     : capacity_(items.size()), size_(0), data_(new value_type[capacity_]{}) {
@@ -120,7 +126,7 @@ s21::vector<T>::vector(const vector &v)
     : m_size_(v.m_size_),
       m_capacity_(v.m_capacity_),
       arr_(new value_type[v.m_capacity_]{}) {
-  for (size_type i = 0; i < m_size_; i++) {
+  for (size_type i = 0; i < m_size_; ++i) {
     arr_[i] = v.arr_[i];
   }
 }
@@ -257,7 +263,7 @@ void s21::vector<T>::reserve(size_type size) {
   if (size >= this->m_capacity_) {
     s21::vector<value_type> temp(size);
     temp.m_size_ = 0;
-    for (size_type i = 0; i < m_size_; i++, temp.m_size_++) {
+    for (size_type i = 0; i < m_size_; ++i, ++temp.m_size_) {
       temp[i] = this->arr_[i];
     }
     this->swap(temp);
@@ -272,7 +278,7 @@ typename s21::vector<T>::size_type s21::vector<T>::capacity() {
 template <typename T>
 void s21::vector<T>::shrink_to_fit() {
   s21::vector<value_type> temp(m_size_);
-  for (size_type i = 0; i < m_size_; i++) {
+  for (size_type i = 0; i < m_size_; ++i) {
     temp[i] = value_type(arr_[i]);
   }
   this->swap(temp);
@@ -298,7 +304,7 @@ typename s21::vector<T>::iterator s21::vector<T>::insert(
     arr_[i] = arr_[i - 1];
   }
   arr_[point] = value;
-  m_size_++;
+  ++m_size_;
   return (iterator)(arr_ + point);
 }
 
@@ -308,7 +314,7 @@ void s21::vector<T>::erase(iterator pos) {
   for (size_type i = point; m_size_ > 0 && i < m_size_ - 1; ++i) {
     arr_[i] = arr_[i + 1];
   }
-  m_size_--;
+  --m_size_;
 }
 
 template <typename T>
