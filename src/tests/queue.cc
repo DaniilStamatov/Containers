@@ -1,5 +1,5 @@
 #include "s21_queue.h"
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 namespace s21 {
 
