@@ -6,9 +6,9 @@ TESTS = tests/*.cc
 
 test: clean
 ifeq ($(OS),Linux)
-	$(GCC) -D LIN $(TESTS) $(LIBS) && ./a.out
+	$(GCC) -g -D LIN $(TESTS) $(LIBS) && ./a.out
 else
-	$(GCC) $(TESTS) $(LIBS) && ./a.out
+	$(GCC) -g $(TESTS) $(LIBS) && ./a.out
 endif
 
 gcov_report: clean

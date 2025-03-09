@@ -515,6 +515,20 @@ TEST(int_methods, pop_back_void) {
   EXPECT_EQ(vec.capacity(), test.capacity());
 }
 
+TEST(int_bonus, insert_many) {
+  s21::vector<int> test;
+  std::cout << test.capacity() << " " << test.size() << std::endl;
+  test.insert_many(test.begin(), 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  std::cout << test.capacity() << " " << test.size() << std::endl;
+}
+
+TEST(int_bonus, insert_many_back) {
+  s21::vector<int> test;
+  std::cout << test.capacity() << " " << test.size() << std::endl;
+  test.insert_many_back(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  std::cout << test.capacity() << " " << test.size() << std::endl;
+}
+
 // ----------------------------------------FLOAT------------------------------------------------
 
 TEST(float_constructors, default) {

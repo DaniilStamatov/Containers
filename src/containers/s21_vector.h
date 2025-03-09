@@ -6,7 +6,7 @@
 #include <typeinfo>
 
 namespace s21 {
-template <typename T>
+template <class T>
 class vector {
  public:
   /*---------- VECTOR MEMBER TYPE ----------*/
@@ -76,15 +76,23 @@ class vector {
   void push_back(const_reference value);  // adds an element to the end
   void pop_back();                        // removes the last element
   void swap(vector &other);               // swaps the contents
+
+  /*---------- VECTOR ITERATORS ----------*/
+  // Inserts new elements into the container directly before pos.
+  template <class... Args>
+  iterator insert_many(const_iterator pos, Args&&... args);
+  // Appends new elements to the end of the container.
+  template <class... Args>
+  void insert_many_back(Args&&... args);
 };
 }  // namespace s21
 
 /*********************************************************************/
 
-template <typename T>
+template <class T>
 s21::vector<T>::vector() : m_size_(0), m_capacity_(0), arr_(nullptr) {}
 
-template <typename T>
+template <class T>
 s21::vector<T>::vector(size_type n) : m_size_(n), m_capacity_(n) {
   if (n > this->max_size())  // подача отрицательного n - переполнение
     throw std::length_error("cannot create s21::vector larger than max_size()");
@@ -96,7 +104,7 @@ s21::vector<T>::vector(size_type n) : m_size_(n), m_capacity_(n) {
   arr_ = new value_type[m_capacity_]{};
 }
 
-template <typename T>
+template <class T>
 s21::vector<T>::vector(std::initializer_list<value_type> const &items)
     : m_size_(items.size()), m_capacity_(items.size()) {
   if (typeid(value_type) ==
@@ -121,7 +129,7 @@ s21::vector<T>::vector(std::initializer_list<value_type> const &items)
 //                 ((this->size_ % __WORDSIZE) > 0 ? __WORDSIZE : 0);
 // };
 
-template <typename T>
+template <class T>
 s21::vector<T>::vector(const vector &v)
     : m_size_(v.m_size_),
       m_capacity_(v.m_capacity_),
@@ -131,7 +139,7 @@ s21::vector<T>::vector(const vector &v)
   }
 }
 
-template <typename T>
+template <class T>
 s21::vector<T>::vector(vector &&v)
     : m_size_(v.m_size_), m_capacity_(v.m_capacity_), arr_(v.arr_) {
   v.arr_ = nullptr;
@@ -139,7 +147,7 @@ s21::vector<T>::vector(vector &&v)
   v.m_capacity_ = 0;
 }
 
-template <typename T>
+template <class T>
 s21::vector<T>::~vector() {
   m_capacity_ = 0;
   m_size_ = 0;
@@ -152,7 +160,7 @@ s21::vector<T>::~vector() {
   кол-во поданных элементов, а capacity изменяется в зависимости от того,
   хватает памяти или нет
 */
-template <typename T>
+template <class T>
 typename s21::vector<T> &s21::vector<T>::operator=(
     std::initializer_list<value_type> const &items) {
   m_size_ = items.size();
@@ -168,7 +176,7 @@ typename s21::vector<T> &s21::vector<T>::operator=(
   return *this;
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T> &s21::vector<T>::operator=(vector &v) {
   if (&v != this) {
     delete[] arr_;
@@ -184,7 +192,7 @@ typename s21::vector<T> &s21::vector<T>::operator=(vector &v) {
 
 // idk what to write, it's 1:43 31st october 2024
 // i finished it at 22:48 on 8th november 2024
-template <typename T>
+template <class T>
 typename s21::vector<T> &s21::vector<T>::operator=(vector &&v) {
   if (&v != this) {
     m_size_ = v.m_size_;
@@ -199,7 +207,7 @@ typename s21::vector<T> &s21::vector<T>::operator=(vector &&v) {
   return *this;
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::reference s21::vector<T>::at(size_type pos) {
   if (pos > m_size_) {
     throw std::out_of_range("Index pos >= this->size()");
@@ -207,54 +215,54 @@ typename s21::vector<T>::reference s21::vector<T>::at(size_type pos) {
   return arr_[pos];
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::reference s21::vector<T>::operator[](size_type pos) {
   return arr_[pos];
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::const_reference s21::vector<T>::front() {
   return arr_[0];
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::const_reference s21::vector<T>::back() {
   return arr_[m_size_ - 1];
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::value_type *s21::vector<T>::data() {
   return arr_;
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::iterator s21::vector<T>::begin() {
   return (iterator)(arr_);
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::iterator s21::vector<T>::end() {
   return (iterator)(arr_ + m_size_);
 }
 
-template <typename T>
+template <class T>
 bool s21::vector<T>::empty() {
   return (m_size_ == 0) ? true : false;
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::size_type s21::vector<T>::size() {
   return m_size_;
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::size_type s21::vector<T>::max_size() {
   size_type reserve_size = 1;
   if (typeid(value_type) == typeid(bool &)) reserve_size = 64;
   return (((powl(2, __WORDSIZE) / sizeof(value_type)) / 2 - reserve_size));
 }
 
-template <typename T>
+template <class T>
 void s21::vector<T>::reserve(size_type size) {
   if (size > this->max_size())  // подача отрицательного n - переполнение
     throw std::length_error("vector::reserve");
@@ -270,12 +278,12 @@ void s21::vector<T>::reserve(size_type size) {
   }
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::size_type s21::vector<T>::capacity() {
   return m_capacity_;
 }
 
-template <typename T>
+template <class T>
 void s21::vector<T>::shrink_to_fit() {
   s21::vector<value_type> temp(m_size_);
   for (size_type i = 0; i < m_size_; ++i) {
@@ -284,7 +292,7 @@ void s21::vector<T>::shrink_to_fit() {
   this->swap(temp);
 }
 
-template <typename T>
+template <class T>
 void s21::vector<T>::clear() {
   if (typeid(value_type) == typeid(bool &))
     m_capacity_ = m_size_ / __WORDSIZE * __WORDSIZE +
@@ -292,7 +300,7 @@ void s21::vector<T>::clear() {
   m_size_ = 0;
 }
 
-template <typename T>
+template <class T>
 typename s21::vector<T>::iterator s21::vector<T>::insert(
     iterator pos, const_reference value) {
   size_type point = std::distance(begin(), pos);
@@ -308,7 +316,7 @@ typename s21::vector<T>::iterator s21::vector<T>::insert(
   return (iterator)(arr_ + point);
 }
 
-template <typename T>
+template <class T>
 void s21::vector<T>::erase(iterator pos) {
   size_type point = std::distance(begin(), pos);
   for (size_type i = point; m_size_ > 0 && i < m_size_ - 1; ++i) {
@@ -317,21 +325,44 @@ void s21::vector<T>::erase(iterator pos) {
   --m_size_;
 }
 
-template <typename T>
+template <class T>
 void s21::vector<T>::push_back(const_reference value) {
   this->insert(this->end(), value);
 }
 
-template <typename T>
+template <class T>
 void s21::vector<T>::pop_back() {
   this->erase(this->end());
 }
 
-template <typename T>
+template <class T>
 void s21::vector<T>::swap(vector &other) {
   s21::vector<value_type> temp(*this);
   *this = std::move(other);
   other = std::move(temp);
+}
+
+template <class T>
+template <class... Args>
+typename s21::vector<T>::iterator s21::vector<T>::insert_many(const_iterator pos, Args&&... args) {
+  iterator iter = nullptr;
+  size_type i = 1;
+  for (auto temp : {args...}) {
+    if (iter == nullptr) iter = insert(const_cast<iterator>(pos), temp);
+    else {
+      insert(iter + i, temp);
+      ++i;
+    }
+  }
+  return iter;
+}
+
+template <class T>
+template <class... Args>
+void s21::vector<T>::insert_many_back(Args&&... args) {
+for (auto i : {args...}) {
+    push_back(i);
+  }
 }
 
 #endif
