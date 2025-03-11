@@ -1,63 +1,52 @@
-OS := $(shell uname -s)
-ARCH := $(shell uname -m)
-OPEN_CMD = open
+GCC = g++ -Wall -Wextra -Werror -std=c++17 -g
+LIBS = $(shell pkg-config --libs --cflags gtest)
+OS = $(shell uname)
+FILES = $(wildcard containers/*.h tests/*.cc tests/*.h)
+TESTS = tests/*.cc
 
-ARCH_PREFIX =
-CC = g++
-CXXFLAGS = -Werror -Wall -Wextra -std=c++17
-LDFLAGS = -I.
-GTEST_FLAGS = $(shell pkg-config --cflags --libs gtest_main gtest)
-INCLUDES = -Icontainers -Icontainersplus
-
-# Source and object files
-TEST_SOURCES = tests/*.cpp
-
-# Build directory
-BUILD_DIR = build
-
-# Executables
-TEST_EXECUTABLE = $(BUILD_DIR)/test
-
-# Ensure the build directory exists
-$(shell mkdir -p $(BUILD_DIR)/containers $(BUILD_DIR)/containersplus)
-
-# Targets
-all: test
-
-install:
+test: clean
+	@reset
 ifeq ($(OS),Linux)
-	sudo apt-get install -y libgtest-dev pkg-config
+	$(GCC) -D LIN $(TESTS) -lgtest && ./a.out
 else
-	brew install googletest pkg-config
+	$(GCC) $(TESTS) $(LIBS) && ./a.out
 endif
 
-test:
-	$(CC) $(CXXFLAGS) $(TEST_SOURCES) -g -o $(TEST_EXECUTABLE) $(LDFLAGS) $(GTEST_FLAGS) $(INCLUDES) -L$(BUILD_DIR)
-	./$(TEST_EXECUTABLE)
+gcov_report: clean
+ifeq ($(OS),Linux)
+	$(GCC) -D LIN --coverage $(TESTS) -lgtest && ./a.out
+else
+	$(GCC) --coverage $(TESTS) $(LIBS) && ./a.out
+endif
+	lcov --capture --directory . -o coverage.info --ignore-errors inconsistent --rc branch_coverage=1
+	lcov --extract coverage.info 'containers/s21_vector.h' -o coverage_filter.info
+	genhtml --output-directory report --legend coverage_filter.info
+ifeq ($(OS),Linux)
+	xdg-open report/index.html
+else
+	open report/index.html
+endif
 
 clean:
-	rm -rf $(BUILD_DIR) report *.gcda *.gcno *.gcov *.html *.css *.info *.cleaned
-
-cppcheck:
-	cppcheck --enable=all --suppress=missingIncludeSystem .
-
-valgrind: $(TEST_EXECUTABLE)
-	CK_FORK=no valgrind --tool=memcheck --leak-check=yes -s ./$(TEST_EXECUTABLE)
-
-leaks: $(TEST_EXECUTABLE)
-	CK_FORK=no leaks -atExit -- ./$(TEST_EXECUTABLE)
+	rm -rf *.gcda *.gcno *.out *.info report
 
 format:
-	cp ../materials/linters/.clang-format .
-	find . -type f \( -name '*.cpp' -o -name '*.h' \) -exec clang-format -i {} \; -exec clang-format -n {} \;
+	clang-format -i --style=Google $(FILES)
 
-checks: format cppcheck
+style:
+	clang-format -n --Werror --style=Google $(FILES)
+	cppcheck --enable=all --language=c++ --suppress=missingIncludeSystem $(FILES)
+
+memory: clean
+	@reset
 ifeq ($(OS),Linux)
-	make valgrind
+	$(GCC) -D LIN $(TESTS) -lgtest
+	valgrind --tool=memcheck --leak-check=yes --track-origins=yes -s --trace-children=yes --track-fds=yes --show-leak-kinds=all ./a.out || exit 0
 else
-	make leaks
+	$(GCC) $(TESTS) $(LIBS)
+	leaks --atExit -- ./a.out
 endif
-
-rebuild: clean all
-
-.PHONY: all install test clean cppcheck valgrind leaks format checks rebuild
+	rm ./a.out
+ifeq ($(OS),Linux)
+	$(GCC) -fsanitize=address -D LIN $(TESTS) -lgtest && ./a.out
+endif
