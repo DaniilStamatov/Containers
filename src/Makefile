@@ -21,7 +21,11 @@ endif
 	lcov --capture --directory . -o coverage.info --ignore-errors inconsistent --rc branch_coverage=1
 	lcov --extract coverage.info 'containers/s21_vector.h' -o coverage_filter.info
 	genhtml --output-directory report --legend coverage_filter.info
+ifeq ($(OS),Linux)
 	xdg-open report/index.html
+else
+	open report/index.html
+endif
 
 clean:
 	rm -rf *.gcda *.gcno *.out *.info report
@@ -31,7 +35,7 @@ format:
 
 style:
 	clang-format -n --Werror --style=Google $(FILES)
-	cppcheck --enable=all --suppress=missingIncludeSystem $(FILES)
+	cppcheck --enable=all --language=c++ --suppress=missingIncludeSystem $(FILES)
 
 memory: clean
 	@reset
