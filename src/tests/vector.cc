@@ -235,6 +235,15 @@ TEST(int_methods, max_size) {
   EXPECT_EQ(vec.max_size(), test.max_size());
 }
 
+TEST(int_methods, reserve_null) {
+  std::vector<int> vec;
+  s21::vector<int> test;
+  vec.reserve(10);
+  test.reserve(10);
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(vec.size(), test.size());
+}
+
 TEST(int_methods, reserve_upscale) {
   s21::vector<int> test({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
   std::vector<int> vec({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
@@ -354,10 +363,6 @@ TEST(int_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-  //           << std::endl;
-  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -408,7 +413,7 @@ TEST(int_methods, insert) {
   test.insert(test.begin() + 2, 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -420,7 +425,7 @@ TEST(int_methods, insert_end) {
   test.insert(test.end(), 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -515,18 +520,29 @@ TEST(int_methods, pop_back_void) {
   EXPECT_EQ(vec.capacity(), test.capacity());
 }
 
-TEST(int_bonus, insert_many) {
+TEST(int_bonus, insert_many_void) {
   s21::vector<int> test;
-  std::cout << test.capacity() << " " << test.size() << std::endl;
-  test.insert_many(test.begin(), 1, 2, 3, 4, 5, 6, 7, 8, 9);
-  std::cout << test.capacity() << " " << test.size() << std::endl;
+  test.insert_many(test.begin(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<int>(i), test[i]);
+  }
 }
 
-TEST(int_bonus, insert_many_back) {
+TEST(int_bonus, insert_many) {
+  s21::vector<int> test({1, 2, 3, 4});
+  test.insert_many(test.begin() + 2, 5, 6, 7, 8, 9);
+  s21::vector<int> vec({1, 2, 5, 6, 7, 8, 9, 3, 4});
+  for (size_t i = 0; i < vec.size(); ++i) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(int_bonus, insert_many_back_void) {
   s21::vector<int> test;
-  std::cout << test.capacity() << " " << test.size() << std::endl;
-  test.insert_many_back(1, 2, 3, 4, 5, 6, 7, 8, 9);
-  std::cout << test.capacity() << " " << test.size() << std::endl;
+  test.insert_many_back(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<int>(i), test[i]);
+  }
 }
 
 // ----------------------------------------FLOAT------------------------------------------------
@@ -755,6 +771,15 @@ TEST(float_methods, max_size) {
   EXPECT_EQ(vec.max_size(), test.max_size());
 }
 
+TEST(float_methods, reserve_null) {
+  std::vector<float> vec;
+  s21::vector<float> test;
+  vec.reserve(10);
+  test.reserve(10);
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(vec.size(), test.size());
+}
+
 TEST(float_methods, reserve_upscale) {
   s21::vector<float> test({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
   std::vector<float> vec({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
@@ -874,10 +899,6 @@ TEST(float_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-  //           << std::endl;
-  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -928,7 +949,7 @@ TEST(float_methods, insert) {
   test.insert(test.begin() + 2, 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -940,7 +961,7 @@ TEST(float_methods, insert_end) {
   test.insert(test.end(), 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -1033,6 +1054,31 @@ TEST(float_methods, pop_back_void) {
   test.pop_back();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(float_bonus, insert_many_void) {
+  s21::vector<float> test;
+  test.insert_many(test.begin(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<float>(i), test[i]);
+  }
+}
+
+TEST(float_bonus, insert_many) {
+  s21::vector<float> test({1, 2, 3, 4});
+  test.insert_many(test.begin() + 2, 5, 6, 7, 8, 9);
+  s21::vector<float> vec({1, 2, 5, 6, 7, 8, 9, 3, 4});
+  for (size_t i = 0; i < vec.size(); ++i) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(float_bonus, insert_many_back_void) {
+  s21::vector<float> test;
+  test.insert_many_back(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<float>(i), test[i]);
+  }
 }
 
 // ----------------------------------------DOUBLE------------------------------------------------
@@ -1261,6 +1307,15 @@ TEST(double_methods, max_size) {
   EXPECT_EQ(vec.max_size(), test.max_size());
 }
 
+TEST(double_methods, reserve_null) {
+  std::vector<double> vec;
+  s21::vector<double> test;
+  vec.reserve(10);
+  test.reserve(10);
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(vec.size(), test.size());
+}
+
 TEST(double_methods, reserve_upscale) {
   s21::vector<double> test({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
   std::vector<double> vec({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
@@ -1380,10 +1435,6 @@ TEST(double_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-  //           << std::endl;
-  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -1434,7 +1485,7 @@ TEST(double_methods, insert) {
   test.insert(test.begin() + 2, 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -1446,7 +1497,7 @@ TEST(double_methods, insert_end) {
   test.insert(test.end(), 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -1539,6 +1590,31 @@ TEST(double_methods, pop_back_void) {
   test.pop_back();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(double_bonus, insert_many_void) {
+  s21::vector<double> test;
+  test.insert_many(test.begin(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<double>(i), test[i]);
+  }
+}
+
+TEST(double_bonus, insert_many) {
+  s21::vector<double> test({1, 2, 3, 4});
+  test.insert_many(test.begin() + 2, 5, 6, 7, 8, 9);
+  s21::vector<double> vec({1, 2, 5, 6, 7, 8, 9, 3, 4});
+  for (size_t i = 0; i < vec.size(); ++i) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(double_bonus, insert_many_back_void) {
+  s21::vector<double> test;
+  test.insert_many_back(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<double>(i), test[i]);
+  }
 }
 
 // ----------------------------------------CHAR------------------------------------------------
@@ -1767,6 +1843,15 @@ TEST(char_methods, max_size) {
   EXPECT_EQ(vec.max_size(), test.max_size());
 }
 
+TEST(char_methods, reserve_null) {
+  std::vector<char> vec;
+  s21::vector<char> test;
+  vec.reserve(10);
+  test.reserve(10);
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(vec.size(), test.size());
+}
+
 TEST(char_methods, reserve_upscale) {
   s21::vector<char> test({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
   std::vector<char> vec({88, 1, 2, 3, 4, 5, 6, 7, 8, 99});
@@ -1886,10 +1971,6 @@ TEST(char_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-  //           << std::endl;
-  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-  //           << std::endl;
 #ifdef LIN
   EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
   std::cout << "std real size = " << malloc_usable_size(vec.data())
@@ -1940,7 +2021,7 @@ TEST(char_methods, insert) {
   test.insert(test.begin() + 2, 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -1952,7 +2033,7 @@ TEST(char_methods, insert_end) {
   test.insert(test.end(), 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -2045,6 +2126,31 @@ TEST(char_methods, pop_back_void) {
   test.pop_back();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(char_bonus, insert_many_void) {
+  s21::vector<char> test;
+  test.insert_many(test.begin(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<char>(i), test[i]);
+  }
+}
+
+TEST(char_bonus, insert_many) {
+  s21::vector<char> test({1, 2, 3, 4});
+  test.insert_many(test.begin() + 2, 5, 6, 7, 8, 9);
+  s21::vector<char> vec({1, 2, 5, 6, 7, 8, 9, 3, 4});
+  for (size_t i = 0; i < vec.size(); ++i) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(char_bonus, insert_many_back_void) {
+  s21::vector<char> test;
+  test.insert_many_back(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(static_cast<char>(i), test[i]);
+  }
 }
 
 // ----------------------------------------BOOL------------------------------------------------
@@ -2202,9 +2308,11 @@ TEST(bool_access, at_exceptions) {
 TEST(bool_access, operator_normal) {
   s21::vector<bool> test({true, false, false, true, true});
   std::vector<bool> vec({true, false, false, true, true});
-  EXPECT_TRUE(test[5] == vec[5]);
+  for (size_t i = 0; i < vec.size(); ++i) {
+    EXPECT_EQ(test[i], vec[i]);
+  }
   EXPECT_NO_THROW({ test[3] = false; });
-  EXPECT_TRUE(test[7] == false);
+  EXPECT_TRUE(test[2] == false);
 }
 
 TEST(bool_access, operator_ub) {
@@ -2282,6 +2390,15 @@ TEST(bool_methods, max_size) {
   EXPECT_EQ(vec.max_size(), test.max_size());
 }
 
+TEST(bool_methods, reserve_null) {
+  std::vector<bool> vec;
+  s21::vector<bool> test;
+  vec.reserve(10);
+  test.reserve(10);
+  EXPECT_EQ(vec.capacity(), test.capacity());
+  EXPECT_EQ(vec.size(), test.size());
+}
+
 TEST(bool_methods, reserve_upscale) {
   s21::vector<bool> test(
       {false, true, false, false, true, false, true, true, false});
@@ -2294,13 +2411,6 @@ TEST(bool_methods, reserve_upscale) {
   vec.reserve(vec.size() * 2);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-#ifdef LIN
-  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
-  std::cout << "std real size = " << malloc_usable_size(vec.data())
-            << std::endl;
-  std::cout << "s21 real size = " << malloc_usable_size(test.data())
-            << std::endl;
-#endif
 }
 
 TEST(bool_methods, reserve_downscale) {
@@ -2316,12 +2426,6 @@ TEST(bool_methods, reserve_downscale) {
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
 #ifdef LIN
-  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
-  std::cout << "std real size = " << malloc_usable_size(vec.data())
-            << std::endl;
-  std::cout << "s21 real size = " << malloc_usable_size(test.data())
-            << std::endl;
-
   EXPECT_ANY_THROW(test.reserve(-1));
 #endif
 }
@@ -2338,24 +2442,10 @@ TEST(bool_methods, reserve_up_down) {
   vec.reserve(vec.size() * 2);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-#ifdef LIN
-  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
-  std::cout << "std real size = " << malloc_usable_size(vec.data())
-            << std::endl;
-  std::cout << "s21 real size = " << malloc_usable_size(test.data())
-            << std::endl;
-#endif
   test.reserve(test.capacity() / 2);
   vec.reserve(vec.capacity() / 2);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-#ifdef LIN
-  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
-  std::cout << "std real size = " << malloc_usable_size(vec.data())
-            << std::endl;
-  std::cout << "s21 real size = " << malloc_usable_size(test.data())
-            << std::endl;
-#endif
   test.reserve(test.capacity());
   vec.reserve(vec.capacity());
   EXPECT_EQ(vec.size(), test.size());
@@ -2382,24 +2472,10 @@ TEST(bool_methods, shrink) {
   vec.reserve(20);
   test.reserve(20);
   EXPECT_EQ(vec.capacity(), test.capacity());
-#ifdef LIN
-  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
-  std::cout << "std real size = " << malloc_usable_size(vec.data())
-            << std::endl;
-  std::cout << "s21 real size = " << malloc_usable_size(test.data())
-            << std::endl;
-#endif
 
   vec.shrink_to_fit();
   test.shrink_to_fit();
   EXPECT_EQ(vec.capacity(), test.capacity());
-#ifdef LIN
-  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
-  std::cout << "std real size = " << malloc_usable_size(vec.data())
-            << std::endl;
-  std::cout << "s21 real size = " << malloc_usable_size(test.data())
-            << std::endl;
-#endif
 }
 
 TEST(bool_methods, clear) {
@@ -2411,18 +2487,7 @@ TEST(bool_methods, clear) {
   test.clear();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  // std::cout << "std: size = " << vec.size() << " cap = " << vec.capacity()
-  //           << std::endl;
-  // std::cout << "s21: size = " << test.size() << " cap = " << test.capacity()
-  //           << std::endl;
-#ifdef LIN
-  EXPECT_EQ(malloc_usable_size(vec.data()), malloc_usable_size(test.data()));
-  std::cout << "std real size = " << malloc_usable_size(vec.data())
-            << std::endl;
-  std::cout << "s21 real size = " << malloc_usable_size(test.data())
-            << std::endl;
-#endif
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -2465,7 +2530,7 @@ TEST(bool_methods, insert) {
   test.insert(test.begin() + 2, 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -2477,7 +2542,7 @@ TEST(bool_methods, insert_end) {
   test.insert(test.end(), 5);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -2498,7 +2563,7 @@ TEST(bool_methods, erase) {
   test.erase(test.begin() + 2);
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -2510,7 +2575,7 @@ TEST(bool_methods, erase_end) {
   test.erase(test.end());
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -2558,7 +2623,7 @@ TEST(bool_methods, pop_back) {
   test.pop_back();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
-  for (size_t i = 0; i < vec.capacity(); i++) {
+  for (size_t i = 0; i < vec.size(); i++) {
     EXPECT_EQ(vec[i], test[i]);
   }
 }
@@ -2570,4 +2635,28 @@ TEST(bool_methods, pop_back_void) {
   test.pop_back();
   EXPECT_EQ(vec.size(), test.size());
   EXPECT_EQ(vec.capacity(), test.capacity());
+}
+
+TEST(bool_bonus, insert_many_void) {
+  s21::vector<bool> test;
+  test.insert_many(test.begin(), false, true, false, true);
+  EXPECT_TRUE(test.capacity() == __WORDSIZE);
+  EXPECT_EQ(test[1], true);
+}
+
+TEST(bool_bonus, insert_many) {
+  s21::vector<bool> test({false, false});
+  test.insert_many(test.begin() + 1, true, true, true, true);
+  s21::vector<bool> vec({false, true, true, true, true, false});
+  for (size_t i = 0; i < vec.size(); ++i) {
+    EXPECT_EQ(vec[i], test[i]);
+  }
+}
+
+TEST(bool_bonus, insert_many_back_void) {
+  s21::vector<bool> test;
+  test.insert_many_back(false, false, false, false, false, false);
+  for (size_t i = 0; i < test.size(); ++i) {
+    EXPECT_EQ(test[i], false);
+  }
 }

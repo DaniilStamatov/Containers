@@ -80,10 +80,10 @@ class vector {
   /*---------- VECTOR ITERATORS ----------*/
   // Inserts new elements into the container directly before pos.
   template <class... Args>
-  iterator insert_many(const_iterator pos, Args&&... args);
+  iterator insert_many(const_iterator pos, Args &&...args);
   // Appends new elements to the end of the container.
   template <class... Args>
-  void insert_many_back(Args&&... args);
+  void insert_many_back(Args &&...args);
 };
 }  // namespace s21
 
@@ -117,17 +117,6 @@ s21::vector<T>::vector(std::initializer_list<value_type> const &items)
     arr_[i] = items.begin()[i];
   }
 }
-
-// template <class T>
-// vector<T>::vector(std::initializer_list<value_type> const& items)
-//     : capacity_(items.size()), size_(0), data_(new value_type[capacity_]{}) {
-//   for (auto it = items.begin(); it != items.end(); ++it, ++size_) {
-//     data_[size_] = value_type(*it);
-//   }
-//   if (typeid(value_type) == typeid(bool&))
-//     capacity_ = this->size_ / __WORDSIZE * __WORDSIZE +
-//                 ((this->size_ % __WORDSIZE) > 0 ? __WORDSIZE : 0);
-// };
 
 template <class T>
 s21::vector<T>::vector(const vector &v)
@@ -344,25 +333,23 @@ void s21::vector<T>::swap(vector &other) {
 
 template <class T>
 template <class... Args>
-typename s21::vector<T>::iterator s21::vector<T>::insert_many(const_iterator pos, Args&&... args) {
-  iterator iter = nullptr;
-  size_type i = 1;
+typename s21::vector<T>::iterator s21::vector<T>::insert_many(
+    const_iterator pos, Args &&...args) {
+  iterator iter = const_cast<iterator>(pos);
+  size_type point = std::distance(begin(), iter);
+  size_type i = 0;
   for (auto temp : {args...}) {
-    if (iter == nullptr) iter = insert(const_cast<iterator>(pos), temp);
-    else {
-      insert(iter + i, temp);
-      ++i;
-    }
+    insert(iter + i, temp);
+    ++i;
+    iter = this->begin() + point;
   }
   return iter;
 }
 
 template <class T>
 template <class... Args>
-void s21::vector<T>::insert_many_back(Args&&... args) {
-for (auto i : {args...}) {
-    push_back(i);
-  }
+void s21::vector<T>::insert_many_back(Args &&...args) {
+  insert_many(this->end(), args...);
 }
 
 #endif
