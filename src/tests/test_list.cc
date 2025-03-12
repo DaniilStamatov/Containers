@@ -6,48 +6,48 @@
 using namespace s21;
 TEST(Constructor, PushBackUltimate) {
   list<int> myList;
-  EXPECT_EQ(myList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
   EXPECT_EQ(myList.begin(), myList.end());
 
   myList.push_back(1);
-  EXPECT_EQ(myList.size(), 1);
+  EXPECT_EQ(myList.size(), 1UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*(--myList.end()), 1);
   EXPECT_EQ(myList.begin(), --myList.end());
 
   myList.push_back(2);
-  EXPECT_EQ(myList.size(), 2);
+  EXPECT_EQ(myList.size(), 2UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*(--myList.end()), 2);
 
   myList.push_back(3);
-  EXPECT_EQ(myList.size(), 3);
+  EXPECT_EQ(myList.size(), 3UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*(--myList.end()), 3);
 
   for (int i = 4; i <= 10; ++i) {
     myList.push_back(i);
   }
-  EXPECT_EQ(myList.size(), 10);
+  EXPECT_EQ(myList.size(), 10UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*(--myList.end()), 10);
 
   myList.clear();
-  EXPECT_EQ(myList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
 }
 
 TEST(ListTest, PushFrontUltimate) {
   list<int> myList;
   std::list<int> stdList;
-  EXPECT_EQ(myList.size(), 0);
-  EXPECT_EQ(stdList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
+  EXPECT_EQ(stdList.size(), 0UL);
   EXPECT_EQ(myList.begin(), myList.end());
   EXPECT_EQ(stdList.begin(), stdList.end());
 
   myList.push_front(1);
   stdList.push_front(1);
-  EXPECT_EQ(myList.size(), 1);
-  EXPECT_EQ(stdList.size(), 1);
+  EXPECT_EQ(myList.size(), 1UL);
+  EXPECT_EQ(stdList.size(), 1UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*stdList.begin(), 1);
   EXPECT_EQ(myList.begin() == --myList.end(), true);
@@ -55,8 +55,8 @@ TEST(ListTest, PushFrontUltimate) {
 
   myList.push_front(2);
   stdList.push_front(2);
-  EXPECT_EQ(myList.size(), 2);
-  EXPECT_EQ(stdList.size(), 2);
+  EXPECT_EQ(myList.size(), 2UL);
+  EXPECT_EQ(stdList.size(), 2UL);
   EXPECT_EQ(*myList.begin(), 2);
   EXPECT_EQ(*stdList.begin(), 2);
   EXPECT_EQ(*(--myList.end()), 1);
@@ -65,8 +65,8 @@ TEST(ListTest, PushFrontUltimate) {
 
   myList.push_front(3);
   stdList.push_front(3);
-  EXPECT_EQ(myList.size(), 3);
-  EXPECT_EQ(stdList.size(), 3);
+  EXPECT_EQ(myList.size(), 3UL);
+  EXPECT_EQ(stdList.size(), 3UL);
   EXPECT_EQ(*myList.begin(), 3);
   EXPECT_EQ(*stdList.begin(), 3);
   EXPECT_EQ(*(--myList.end()), 1);
@@ -76,8 +76,8 @@ TEST(ListTest, PushFrontUltimate) {
     myList.push_front(i);
     stdList.push_front(i);
   }
-  EXPECT_EQ(myList.size(), 10);
-  EXPECT_EQ(stdList.size(), 10);
+  EXPECT_EQ(myList.size(), 10UL);
+  EXPECT_EQ(stdList.size(), 10UL);
   EXPECT_EQ(*myList.begin(), 10);
   EXPECT_EQ(*stdList.begin(), 10);
   EXPECT_EQ(*(--myList.end()), 1);
@@ -85,16 +85,16 @@ TEST(ListTest, PushFrontUltimate) {
 
   myList.clear();
   stdList.clear();
-  EXPECT_EQ(myList.size(), 0);
-  EXPECT_EQ(stdList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
+  EXPECT_EQ(stdList.size(), 0UL);
 }
 
 TEST(ConstructorTest, DefaultConstructor) {
   list<int> myList;
   std::list<int> stdList;
 
-  EXPECT_EQ(myList.size(), 0);
-  EXPECT_EQ(stdList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
+  EXPECT_EQ(stdList.size(), 0UL);
   EXPECT_EQ(myList.begin(), myList.end());
   EXPECT_EQ(stdList.begin(), stdList.end());
 }
@@ -103,8 +103,8 @@ TEST(ConstructorTest, InitializerListConstructor) {
   list<int> myList = {1, 2, 3, 4, 5};
   std::list<int> stdList = {1, 2, 3, 4, 5};
 
-  EXPECT_EQ(myList.size(), 5);
-  EXPECT_EQ(stdList.size(), 5);
+  EXPECT_EQ(myList.size(), 5UL);
+  EXPECT_EQ(stdList.size(), 5UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*stdList.begin(), 1);
   EXPECT_EQ(*(--myList.end()), 5);
@@ -115,8 +115,8 @@ TEST(ConstructorTest, MoveConstructor) {
   list<int> myList = {1, 2, 3, 4, 5};
   list<int> movedList = std::move(myList);
 
-  EXPECT_EQ(movedList.size(), 5);
-  EXPECT_EQ(myList.size(), 0);
+  EXPECT_EQ(movedList.size(), 5UL);
+  EXPECT_EQ(myList.size(), 0UL);
   EXPECT_EQ(*movedList.begin(), 1);
   EXPECT_EQ(*(--movedList.end()), 5);
 }
@@ -130,13 +130,13 @@ TEST(ListTest, PopBack) {
     stdList.push_back(i);
   }
 
-  EXPECT_EQ(myList.size(), 5);
-  EXPECT_EQ(stdList.size(), 5);
+  EXPECT_EQ(myList.size(), 5UL);
+  EXPECT_EQ(stdList.size(), 5UL);
 
   myList.pop_back();
   stdList.pop_back();
-  EXPECT_EQ(myList.size(), 4);
-  EXPECT_EQ(stdList.size(), 4);
+  EXPECT_EQ(myList.size(), 4UL);
+  EXPECT_EQ(stdList.size(), 4UL);
   EXPECT_EQ(*(--myList.end()), 4);
   EXPECT_EQ(*(--stdList.end()), 4);
 }
@@ -150,13 +150,13 @@ TEST(ListTest, PopFront) {
     stdList.push_back(i);
   }
 
-  EXPECT_EQ(myList.size(), 5);
-  EXPECT_EQ(stdList.size(), 5);
+  EXPECT_EQ(myList.size(), 5UL);
+  EXPECT_EQ(stdList.size(), 5UL);
 
   myList.pop_front();
   stdList.pop_front();
-  EXPECT_EQ(myList.size(), 4);
-  EXPECT_EQ(stdList.size(), 4);
+  EXPECT_EQ(myList.size(), 4UL);
+  EXPECT_EQ(stdList.size(), 4UL);
   EXPECT_EQ(*myList.begin(), 2);
   EXPECT_EQ(*stdList.begin(), 2);
 }
@@ -168,8 +168,8 @@ TEST(InsertTest, InsertIntoEmptyList) {
   myList.insert(myList.begin(), 1);
   stdList.insert(stdList.begin(), 1);
 
-  EXPECT_EQ(myList.size(), 1);
-  EXPECT_EQ(stdList.size(), 1);
+  EXPECT_EQ(myList.size(), 1UL);
+  EXPECT_EQ(stdList.size(), 1UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*stdList.begin(), 1);
 }
@@ -181,8 +181,8 @@ TEST(InsertTest, InsertAtBeginning) {
   myList.insert(myList.begin(), 1);
   stdList.insert(stdList.begin(), 1);
 
-  EXPECT_EQ(myList.size(), 4);
-  EXPECT_EQ(stdList.size(), 4);
+  EXPECT_EQ(myList.size(), 4UL);
+  EXPECT_EQ(stdList.size(), 4UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*stdList.begin(), 1);
 }
@@ -194,8 +194,8 @@ TEST(InsertTest, InsertAtEnd) {
   myList.insert(myList.end(), 4);
   stdList.insert(stdList.end(), 4);
 
-  EXPECT_EQ(myList.size(), 4);
-  EXPECT_EQ(stdList.size(), 4);
+  EXPECT_EQ(myList.size(), 4UL);
+  EXPECT_EQ(stdList.size(), 4UL);
   EXPECT_EQ(*(--myList.end()), 4);
   EXPECT_EQ(*(--stdList.end()), 4);
 }
@@ -205,8 +205,8 @@ TEST(InsertTest, InsertInMiddle) {
   std::list<int> stdList = {1, 3, 4};
   myList.insert(++myList.begin(), 2);
   stdList.insert(++stdList.begin(), 2);
-  EXPECT_EQ(myList.size(), 4);
-  EXPECT_EQ(stdList.size(), 4);
+  EXPECT_EQ(myList.size(), 4UL);
+  EXPECT_EQ(stdList.size(), 4UL);
   EXPECT_EQ(*(++myList.begin()), 2);
   EXPECT_EQ(*(++stdList.begin()), 2);
 }
@@ -220,8 +220,8 @@ TEST(InsertTest, InsertMultipleElements) {
     stdList.insert(stdList.end(), i);
   }
 
-  EXPECT_EQ(myList.size(), 5);
-  EXPECT_EQ(stdList.size(), 5);
+  EXPECT_EQ(myList.size(), 5UL);
+  EXPECT_EQ(stdList.size(), 5UL);
   EXPECT_EQ(*myList.begin(), 1);
   EXPECT_EQ(*stdList.begin(), 1);
   EXPECT_EQ(*(--myList.end()), 5);
@@ -234,8 +234,8 @@ TEST(MergeTest, EmptyLists) {
 
   list1.merge(list2);
 
-  EXPECT_EQ(list1.size(), 0);
-  EXPECT_EQ(list2.size(), 0);
+  EXPECT_EQ(list1.size(), 0UL);
+  EXPECT_EQ(list2.size(), 0UL);
 }
 
 TEST(MergeTest, EmptyList) {
@@ -244,7 +244,7 @@ TEST(MergeTest, EmptyList) {
 
   list1.merge(list2);
 
-  EXPECT_EQ(list1.size(), 3);
+  EXPECT_EQ(list1.size(), 3UL);
   EXPECT_EQ(*list1.begin(), 1);
   EXPECT_EQ(*(--list1.end()), 5);
 }
@@ -255,7 +255,7 @@ TEST(MergeTest, EqualTest) {
 
   list1.merge(list2);
 
-  EXPECT_EQ(list1.size(), 6);
+  EXPECT_EQ(list1.size(), 6UL);
   EXPECT_EQ(*list1.begin(), 1);
   EXPECT_EQ(*(++list1.begin()), 1);
   EXPECT_EQ(*(++(++list1.begin())), 2);
@@ -270,7 +270,7 @@ TEST(MergeTest, MergeNormal) {
 
   list1.merge(list2);
 
-  EXPECT_EQ(list1.size(), 6);
+  EXPECT_EQ(list1.size(), 6UL);
   EXPECT_EQ(*list1.begin(), 1);
   EXPECT_EQ(*(++list1.begin()), 2);
   EXPECT_EQ(*(++(++list1.begin())), 3);
@@ -285,8 +285,8 @@ TEST(SpliceTest, EmptyList) {
 
   list1.splice(list1.begin(), list2);
 
-  EXPECT_EQ(list1.size(), 0);
-  EXPECT_EQ(list2.size(), 0);
+  EXPECT_EQ(list1.size(), 0UL);
+  EXPECT_EQ(list2.size(), 0UL);
 }
 
 TEST(SpliceTest, NormalTest) {
@@ -295,21 +295,21 @@ TEST(SpliceTest, NormalTest) {
 
   list1.splice(list1.end(), list2);
 
-  EXPECT_EQ(list1.size(), 6);
-  EXPECT_EQ(list2.size(), 0);
+  EXPECT_EQ(list1.size(), 6UL);
+  EXPECT_EQ(list2.size(), 0UL);
   EXPECT_EQ(*(--list1.end()), 6);
 }
 
 TEST(SortTest, EmptyList) {
   list<int> myList;
   myList.sort();
-  EXPECT_EQ(myList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
 }
 
 TEST(SortTest, SingleList) {
   list<int> myList = {51};
   myList.sort();
-  EXPECT_EQ(myList.size(), 1);
+  EXPECT_EQ(myList.size(), 1UL);
   EXPECT_EQ(*myList.begin(), 51);
 }
 
@@ -358,13 +358,13 @@ TEST(SortTest, SortWithDuplicates) {
 TEST(ReverseTest, ReverseEmptyList) {
   list<int> myList;
   myList.reverse();
-  EXPECT_EQ(myList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
 }
 
 TEST(ReverseTest, ReverseSingleElement) {
   list<int> myList = {42};
   myList.reverse();
-  EXPECT_EQ(myList.size(), 1);
+  EXPECT_EQ(myList.size(), 1UL);
   EXPECT_EQ(*myList.begin(), 42);
 }
 
@@ -469,13 +469,13 @@ TEST(EraseTest, EraseEnd) {
 TEST(UniqueTest, UniqueEmptyList) {
   list<int> myList;
   myList.unique();
-  EXPECT_EQ(myList.size(), 0);
+  EXPECT_EQ(myList.size(), 0UL);
 }
 
 TEST(UniqueTest, UniqueSingleElement) {
   list<int> myList = {42};
   myList.unique();
-  EXPECT_EQ(myList.size(), 1);
+  EXPECT_EQ(myList.size(), 1UL);
   EXPECT_EQ(*myList.begin(), 42);
 }
 

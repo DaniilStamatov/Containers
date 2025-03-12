@@ -25,9 +25,14 @@ class map : protected rbtree<K, T> {
     return rbtree<K, T>::insert_or_assign(key, obj);
   }
   template<class... Args>
-  std::vector<std::pair<iterator, bool>> insert_many(Args&& ...args) {
-    return rbtree<K,T>::insert_many(args);
+  s21::vector<std::pair<iterator, bool>> insert_many(Args&& ...args) {
+    s21::vector<std::pair<iterator,bool>> results;
+    for(const auto& arg : {args...}) {
+      results.push_back(insert(arg));
+    }
+    return results;
   }
+
   void merge(map& other) { rbtree<K, T>::merge(other); }
 
   void erase(iterator pos) { rbtree<K, T>::erase(*pos); }
