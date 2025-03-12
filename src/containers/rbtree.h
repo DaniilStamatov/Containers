@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include "s21_vector.h"
 template <typename K, typename T>
 class rbtree {
  public:
@@ -83,6 +84,14 @@ class rbtree {
   std::pair<iterator, bool> insert(const value_type& value) noexcept;
   std::pair<iterator, bool> insert(const K& key, const T& obj);
   std::pair<iterator, bool> insert_or_assign(const K& key, const T& obj);
+  template<class... Args>
+  s21::vector<std::pair<iterator,bool>> insert_many(Args&&... args) {
+    s21::vector<std::pair<iterator,bool>> results;
+    for(const auto& arg : {args...}) {
+      results.push_back(insert(arg));
+    }
+    return results;
+  }
   void erase(iterator pos);
   void erase(const value_type& value);
   void merge(rbtree& other);

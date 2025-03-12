@@ -542,3 +542,101 @@ TEST(MaxSizeTest, Ints) {
   std::list<int> List = {1, 2, 3, 4, 5};
   EXPECT_EQ(myList.max_size(), List.max_size());
 }
+
+TEST(InsertManyTest, Ints) {
+  s21::list<int> myList = {1, 2, 3, 4, 5};
+  std::list<int> expected = {1, 6, 7, 8, 2, 3, 4, 5};
+  s21::list<int>::iterator it = myList.begin();
+  ++it;
+  myList.insert_many(it, 6, 7 ,8);
+  auto it1 = myList.begin();
+  auto it2 = expected.begin();
+  while (it1 != myList.end() && it2 != expected.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1;
+    ++it2;
+  }
+}
+
+
+TEST(InsertManyTest, Empty) {
+  s21::list<int> myList;
+  std::list<int> expected = {6, 7, 8};
+  s21::list<int>::iterator it = myList.begin();
+  myList.insert_many(it, 6, 7 ,8);
+  auto it1 = myList.begin();
+  auto it2 = expected.begin();
+  while (it1 != myList.end() && it2 != expected.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1;
+    ++it2;
+  }
+}
+
+TEST(InsertManyTest, InsertAtEnd) {
+  s21::list<int> myList = {1, 2, 3, 4, 5};
+  std::list<int> expected = {1, 2, 3, 4, 5, 6, 7, 8};
+  myList.insert_many(myList.end(), 6, 7, 8);
+  auto it1 = myList.begin();
+  auto it2 = expected.begin();
+  while (it1 != myList.end() && it2 != expected.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1;
+    ++it2;
+  }
+}
+
+TEST(InsertManyTest, InsertAtBeginning) {
+  s21::list<int> myList = {2, 3, 4, 5};
+  std::list<int> expected = {1, 6, 7, 8, 2, 3, 4, 5};
+  s21::list<int>::iterator it = myList.begin();
+  myList.insert_many(it, 6, 7, 8);
+  it = myList.begin();
+  myList.insert(it, 1);
+  auto it1 = myList.begin();
+  auto it2 = expected.begin();
+  while (it1 != myList.end() && it2 != expected.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1;
+    ++it2;
+  }
+}
+
+TEST(InsertManyBack, Ints) {
+  s21::list<int> myList = {2, 3, 4, 5};
+  myList.insert_many_back(6, 7, 8);
+  std::list<int> expected = {2, 3, 4, 5, 6, 7, 8};
+  auto it1 = myList.begin();
+  auto it2 = expected.begin();
+  while (it1 != myList.end() && it2 != expected.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1;
+    ++it2;
+  }
+}
+
+TEST(InsertManyBack, Empty) {
+  s21::list<int> myList;
+  myList.insert_many_back(6, 7, 8);
+  std::list<int> expected = {6, 7, 8};
+  auto it1 = myList.begin();
+  auto it2 = expected.begin();
+  while (it1 != myList.end() && it2 != expected.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1;
+    ++it2;
+  }
+}
+
+TEST(InsertManyFront, Empty) {
+  s21::list<int> myList;
+  myList.insert_many_front(6, 7, 8);
+  std::list<int> expected = {8, 7, 6};
+  auto it1 = myList.begin();
+  auto it2 = expected.begin();
+  while (it1 != myList.end() && it2 != expected.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1;
+    ++it2;
+  }
+}
