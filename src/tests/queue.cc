@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 #include "../containers/s21_queue.h"
-=======
-#include "s21_queue.h"
->>>>>>> 69ac7c723b96bc8d91fa0df2650b8692ea2e95b0
 #include <gtest/gtest.h>
 
 namespace s21 {

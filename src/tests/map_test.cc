@@ -218,10 +218,10 @@ TEST(InsertManyTest, InsertNewElements) {
     map<int, std::string> myMap;
     auto results = myMap.insert_many(std::make_pair(1, "one"), std::make_pair(2, "two"), std::make_pair(3, "three"));
 
-    EXPECT_EQ(results.size(), 3);
+    EXPECT_EQ(results.size(), (size_t)3);
     EXPECT_TRUE(results[0].second);
     EXPECT_TRUE(results[1].second);
     EXPECT_TRUE(results[2].second);
 
-    EXPECT_EQ(myMap.size(), 3);
+    EXPECT_EQ(myMap.size(), (size_t)3);
 }

@@ -149,22 +149,22 @@ TEST(InsertManyTest, strings) {
     set<std::string> mySet;
     auto results = mySet.insert_many("one", "two", "three");
 
-    EXPECT_EQ(results.size(), 3);
+    EXPECT_EQ(results.size(), (size_t)3);
     EXPECT_TRUE(results[0].second);
     EXPECT_TRUE(results[1].second);
     EXPECT_TRUE(results[2].second);
 
-    EXPECT_EQ(mySet.size(), 3);
+    EXPECT_EQ(mySet.size(), (size_t)3);
 }
 
 TEST(InsertManyTest, doubles) {
     set<double> mySet;
     auto results = mySet.insert_many(4.59, 12.902, 56.41);
 
-    EXPECT_EQ(results.size(), 3);
+    EXPECT_EQ(results.size(), (size_t)3);
     EXPECT_TRUE(results[0].second);
     EXPECT_TRUE(results[1].second);
     EXPECT_TRUE(results[2].second);
 
-    EXPECT_EQ(mySet.size(), 3);
+    EXPECT_EQ(mySet.size(), (size_t)3);
 }
