@@ -100,8 +100,8 @@ class rbtree {
  private:
   void rotate_left(node* pos);
   void rotate_right(node* pos);
-  void insert(const value_type& value, iterator& iter, bool& inserted);
-  void insert_node(node* temp, iterator& iter, bool& inserted);
+  bool insert(const value_type& value, iterator& iter);
+  bool insert_node(node* temp, iterator& iter);
   void clear(node* node);
   node* copy(node* node);
   void transfer_node(node* deleted_node, node* inserted_node) noexcept;
@@ -136,21 +136,21 @@ class rbtree {
 };
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree_iterator::rbtree_iterator() noexcept
+rbtree<K, T>::rbtree_iterator::rbtree_iterator() noexcept
     : m_current(nullptr) {}
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree_iterator::rbtree_iterator(node* node) noexcept
+rbtree<K, T>::rbtree_iterator::rbtree_iterator(node* node) noexcept
     : m_current(node) {}
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::reference
+typename rbtree<K, T>::reference
 rbtree<K, T>::rbtree_iterator::operator*() const {
   return m_current->m_value;
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::pointer
+typename rbtree<K, T>::pointer
 rbtree<K, T>::rbtree_iterator::operator->() const {
   if (!m_current) {
     throw std::runtime_error("Attempt to access value via invalid iterator");
@@ -159,27 +159,28 @@ rbtree<K, T>::rbtree_iterator::operator->() const {
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::rbtree_iterator&
+typename rbtree<K, T>::rbtree_iterator&
 rbtree<K, T>::rbtree_iterator::operator++() {
-  if (m_current == nullptr) return *this;
-  if (m_current->m_right) {
-    m_current = m_current->m_right;
-    while (m_current->m_left) {
-      m_current = m_current->m_left;
-    }
-  } else {
-    node* temp = m_current->m_parent;
-    while (temp != nullptr && m_current == temp->m_right) {
+  if (m_current != nullptr) {
+    if (m_current->m_right) {
+      m_current = m_current->m_right;
+      while (m_current->m_left) {
+        m_current = m_current->m_left;
+      }
+    } else {
+      node* temp = m_current->m_parent;
+      while (temp != nullptr && m_current == temp->m_right) {
+        m_current = temp;
+        temp = temp->m_parent;
+      }
       m_current = temp;
-      temp = temp->m_parent;
     }
-    m_current = temp;
   }
   return *this;
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::rbtree_iterator
+typename rbtree<K, T>::rbtree_iterator
 rbtree<K, T>::rbtree_iterator::operator++(int) {
   rbtree_iterator temp(m_current);
   ++(*this);
@@ -187,27 +188,28 @@ rbtree<K, T>::rbtree_iterator::operator++(int) {
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::rbtree_iterator&
+typename rbtree<K, T>::rbtree_iterator&
 rbtree<K, T>::rbtree_iterator::operator--() {
-  if (m_current == nullptr) return *this;
-  if (m_current->m_left) {
-    m_current = m_current->m_left;
-    while (m_current->m_right) {
-      m_current = m_current->m_right;
-    }
-  } else {
-    node* temp = m_current->m_parent;
-    while (temp != nullptr && m_current == temp->m_left) {
+  if (m_current != nullptr) {
+    if (m_current->m_left) {
+      m_current = m_current->m_left;
+      while (m_current->m_right) {
+        m_current = m_current->m_right;
+      }
+    } else {
+      node* temp = m_current->m_parent;
+      while (temp != nullptr && m_current == temp->m_left) {
+        m_current = temp;
+        temp = temp->m_parent;
+      }
       m_current = temp;
-      temp = temp->m_parent;
     }
-    m_current = temp;
   }
   return *this;
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::rbtree_iterator
+typename rbtree<K, T>::rbtree_iterator
 rbtree<K, T>::rbtree_iterator::operator--(int) {
   rbtree_iterator temp(m_current);
   --(*this);
@@ -215,25 +217,25 @@ rbtree<K, T>::rbtree_iterator::operator--(int) {
 }
 
 template <typename K, typename T>
-inline bool rbtree<K, T>::rbtree_iterator::operator==(
+bool rbtree<K, T>::rbtree_iterator::operator==(
     const rbtree_iterator& lhs) {
   return this->m_current == lhs.m_current;
 }
 
 template <typename K, typename T>
-inline bool rbtree<K, T>::rbtree_iterator::operator!=(
+bool rbtree<K, T>::rbtree_iterator::operator!=(
     const rbtree_iterator& lhs) {
   return this->m_current != lhs.m_current;
 }
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree() noexcept : m_root(nullptr), m_size(0) {}
+rbtree<K, T>::rbtree() noexcept : m_root(nullptr), m_size(0) {}
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree(node* node) : m_root(node), m_size(1) {}
+rbtree<K, T>::rbtree(node* node) : m_root(node), m_size(1) {}
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree(const std::initializer_list<value_type>& items)
+rbtree<K, T>::rbtree(const std::initializer_list<value_type>& items)
     : m_root(nullptr), m_size(0) {
   for (auto i : items) {
     insert(i);
@@ -241,23 +243,23 @@ inline rbtree<K, T>::rbtree(const std::initializer_list<value_type>& items)
 }
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree(const rbtree& other) noexcept
+rbtree<K, T>::rbtree(const rbtree& other) noexcept
     : m_root(copy(other.m_root)), m_size(other.m_size) {}
 
 template <typename K, typename T>
-inline rbtree<K, T>::rbtree(rbtree&& other) noexcept
+rbtree<K, T>::rbtree(rbtree&& other) noexcept
     : m_root(nullptr), m_size(0) {
   swap(other);
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::swap(rbtree<K, T>&& other) {
+void rbtree<K, T>::swap(rbtree<K, T>&& other) {
   std::swap(m_root, other.m_root);
   std::swap(m_size, other.m_size);
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::swap(rbtree<K, T>& other) {
+void rbtree<K, T>::swap(rbtree<K, T>& other) {
   if (this != &other) {
     std::swap(m_root, other.m_root);
     std::swap(m_size, other.m_size);
@@ -265,12 +267,12 @@ inline void rbtree<K, T>::swap(rbtree<K, T>& other) {
 }
 
 template <typename K, typename T>
-inline rbtree<K, T>::~rbtree() {
+rbtree<K, T>::~rbtree() {
   clear(m_root);
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::clear(node* node) {
+void rbtree<K, T>::clear(node* node) {
   if (node == nullptr) return;
   clear(node->m_left);
   clear(node->m_right);
@@ -278,7 +280,7 @@ inline void rbtree<K, T>::clear(node* node) {
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::node* rbtree<K, T>::copy(node* n) {
+typename rbtree<K, T>::node* rbtree<K, T>::copy(node* n) {
   node* temp = nullptr;
   if (n != nullptr) {
     temp = new node(n->m_value);
@@ -291,7 +293,7 @@ inline typename rbtree<K, T>::node* rbtree<K, T>::copy(node* n) {
 }
 
 template <typename K, typename T>
-inline rbtree<K, T>& rbtree<K, T>::operator=(const rbtree& other) noexcept {
+rbtree<K, T>& rbtree<K, T>::operator=(const rbtree& other) noexcept {
   if (this != &other) {
     rbtree temp(other);
     clear(m_root);
@@ -301,7 +303,7 @@ inline rbtree<K, T>& rbtree<K, T>::operator=(const rbtree& other) noexcept {
 }
 
 template <typename K, typename T>
-inline rbtree<K, T>& rbtree<K, T>::operator=(rbtree&& other) noexcept {
+rbtree<K, T>& rbtree<K, T>::operator=(rbtree&& other) noexcept {
   if (this != &other) {
     swap(other);
   }
@@ -309,17 +311,17 @@ inline rbtree<K, T>& rbtree<K, T>::operator=(rbtree&& other) noexcept {
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::iterator rbtree<K, T>::begin() noexcept {
+typename rbtree<K, T>::iterator rbtree<K, T>::begin() noexcept {
   return iterator(get_min(m_root));
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::iterator rbtree<K, T>::end() noexcept {
+typename rbtree<K, T>::iterator rbtree<K, T>::end() noexcept {
   return iterator(nullptr);
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::node* rbtree<K, T>::find_node(const K& key) {
+typename rbtree<K, T>::node* rbtree<K, T>::find_node(const K& key) {
   node* current = m_root;
   bool flag = false;
   while (current != nullptr && !flag) {
@@ -335,7 +337,7 @@ inline typename rbtree<K, T>::node* rbtree<K, T>::find_node(const K& key) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::rotate_left(node* pos) {
+void rbtree<K, T>::rotate_left(node* pos) {
   node* pivot = pos->m_right;
 
   if (pos->m_parent != nullptr) {
@@ -358,7 +360,7 @@ inline void rbtree<K, T>::rotate_left(node* pos) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::rotate_right(node* pos) {
+void rbtree<K, T>::rotate_right(node* pos) {
   node* pivot = pos->m_left;
 
   if (pos->m_parent != nullptr) {
@@ -386,20 +388,19 @@ template <typename K, typename T>
 std::pair<typename rbtree<K, T>::iterator, bool> rbtree<K, T>::insert(
     const value_type& value) noexcept {
   iterator it;
-  bool is_inserted = false;
-  insert(value, it, is_inserted);
+  bool is_inserted = insert(value, it);
   std::pair<iterator, bool> res = {it, is_inserted};
   return res;
 }
 
 template <typename K, typename T>
-inline std::pair<typename rbtree<K, T>::iterator, bool> rbtree<K, T>::insert(
+std::pair<typename rbtree<K, T>::iterator, bool> rbtree<K, T>::insert(
     const K& key, const T& obj) {
   return insert(std::make_pair(key, obj));
 }
 
 template <typename K, typename T>
-inline std::pair<typename rbtree<K, T>::iterator, bool>
+std::pair<typename rbtree<K, T>::iterator, bool>
 rbtree<K, T>::insert_or_assign(const K& key, const T& obj) {
   iterator it = begin();
   bool is_inserted = false;
@@ -416,18 +417,17 @@ rbtree<K, T>::insert_or_assign(const K& key, const T& obj) {
 }
 
 template <typename K, typename T>
-void rbtree<K, T>::insert_node(node* temp, iterator& iter, bool& inserted) {
+bool rbtree<K, T>::insert_node(node* temp, iterator& iter) {
   node* begin = m_root;
   node* begin_parent = nullptr;
-  bool flag = false;
+  bool flag = false, inserted = false;
   while (begin != nullptr && !flag) {
     begin_parent = begin;
     if (temp->m_value.first < begin->m_value.first) {
       begin = begin->m_left;
     } else if (temp->m_value.first > begin->m_value.first) {
       begin = begin->m_right;
-    } else if (temp->m_value.first == begin->m_value.first) {
-      inserted = false;
+    } else {
       iter = iterator(begin);
       flag = true;
     }
@@ -444,20 +444,20 @@ void rbtree<K, T>::insert_node(node* temp, iterator& iter, bool& inserted) {
     inserted = true;
     iter = iterator(temp);
   }
+  return inserted;
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::insert(const value_type& value, iterator& iter,
-                                 bool& inserted) {
+bool rbtree<K, T>::insert(const value_type& value, iterator& iter) {
   node* temp = new node(value);
-
+  bool inserted = false;
   if (m_root == nullptr) {
     m_root = temp;
     temp->m_parent = nullptr;
     iter = iterator(temp);
     inserted = true;
   } else {
-    insert_node(temp, iter, inserted);
+    inserted = insert_node(temp, iter);
   }
   if (inserted) {
     balance_insertion(temp);
@@ -465,10 +465,11 @@ inline void rbtree<K, T>::insert(const value_type& value, iterator& iter,
   } else {
     delete temp;
   }
+  return inserted;
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::node* rbtree<K, T>::get_sibling(node* n) {
+typename rbtree<K, T>::node* rbtree<K, T>::get_sibling(node* n) {
   node* parent = n->m_parent;
   node* sibling = nullptr;
   if (n == parent->m_left) {
@@ -480,11 +481,11 @@ inline typename rbtree<K, T>::node* rbtree<K, T>::get_sibling(node* n) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::erase(iterator pos) {
+void rbtree<K, T>::erase(iterator pos) {
   erase(*pos);
 }
 template <typename K, typename T>
-inline void rbtree<K, T>::erase(const value_type& value) {
+void rbtree<K, T>::erase(const value_type& value) {
   node* find = find_node(value.first);
   node* child = nullptr;
   node* successor = find;
@@ -538,7 +539,7 @@ inline void rbtree<K, T>::erase(const value_type& value) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::merge(rbtree& other) {
+void rbtree<K, T>::merge(rbtree& other) {
   for (iterator it = other.begin(); it != other.end(); ++it) {
     insert(*it);
   }
@@ -591,7 +592,7 @@ void rbtree<K, T>::transfer_node(node* source, node* target) noexcept {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::replace_node(node* old_node,
+void rbtree<K, T>::replace_node(node* old_node,
                                        node* new_node) noexcept {
   if (new_node) {
     new_node->m_parent = old_node->m_parent;
@@ -605,14 +606,14 @@ inline void rbtree<K, T>::replace_node(node* old_node,
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::delete_case1(node* n) {
+void rbtree<K, T>::delete_case1(node* n) {
   if (n->m_parent) {
     delete_case2(n);
   }
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::delete_case2(node* find) {
+void rbtree<K, T>::delete_case2(node* find) {
   node* s = get_sibling(find);
   if (s && s->m_color == NodeColor::Red) {
     find->m_parent->m_color = NodeColor::Red;
@@ -627,7 +628,7 @@ inline void rbtree<K, T>::delete_case2(node* find) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::delete_case3(node* find) {
+void rbtree<K, T>::delete_case3(node* find) {
   node* s = get_sibling(find);
   if (s && find->m_parent->m_color == NodeColor::Black &&
       s->m_color == NodeColor::Black &&
@@ -641,7 +642,7 @@ inline void rbtree<K, T>::delete_case3(node* find) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::delete_case4(node* n) {
+void rbtree<K, T>::delete_case4(node* n) {
   node* s = get_sibling(n);
   if (s && n->m_parent->m_color == NodeColor::Red &&
       (s->m_color == NodeColor::Black) &&
@@ -655,7 +656,7 @@ inline void rbtree<K, T>::delete_case4(node* n) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::delete_case5(node* n) {
+void rbtree<K, T>::delete_case5(node* n) {
   node* s = get_sibling(n);
 
   if (s && s->m_color == NodeColor::Black) {
@@ -677,7 +678,7 @@ inline void rbtree<K, T>::delete_case5(node* n) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::delete_case6(node* n) {
+void rbtree<K, T>::delete_case6(node* n) {
   node* s = get_sibling(n);
   s->m_color = n->m_parent->m_color;
   n->m_parent->m_color = NodeColor::Black;
@@ -691,7 +692,7 @@ inline void rbtree<K, T>::delete_case6(node* n) {
 }
 
 template <typename K, typename T>
-inline bool rbtree<K, T>::is_leaf(node* n) {
+bool rbtree<K, T>::is_leaf(node* n) {
   return (n != nullptr && n->m_left == nullptr && n->m_right == nullptr);
 }
 
@@ -706,7 +707,7 @@ typename rbtree<K, T>::node* rbtree<K, T>::get_min(node* n) {
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::node* rbtree<K, T>::get_max(node* n) {
+typename rbtree<K, T>::node* rbtree<K, T>::get_max(node* n) {
   while (n->m_right) {
     n = n->m_right;
   }
@@ -714,7 +715,7 @@ inline typename rbtree<K, T>::node* rbtree<K, T>::get_max(node* n) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::balance_insertion(node* pos) {
+void rbtree<K, T>::balance_insertion(node* pos) {
   if (pos == m_root) {
     pos->m_color = NodeColor::Black;
   } else {
@@ -755,7 +756,7 @@ inline void rbtree<K, T>::balance_insertion(node* pos) {
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::set_grandfather(rbtree<K, T>::node* parent,
+void rbtree<K, T>::set_grandfather(rbtree<K, T>::node* parent,
                                           rbtree<K, T>::node* uncle,
                                           rbtree<K, T>::node* grandfather,
                                           rbtree<K, T>::node*& pos) {
@@ -766,7 +767,7 @@ inline void rbtree<K, T>::set_grandfather(rbtree<K, T>::node* parent,
 }
 
 template <typename K, typename T>
-inline T& rbtree<K, T>::at(const K& key) {
+T& rbtree<K, T>::at(const K& key) {
   node* node = find_node(key);
   if (node == nullptr) {
     throw std::out_of_range("Key not found in the tree");
@@ -775,7 +776,7 @@ inline T& rbtree<K, T>::at(const K& key) {
 }
 
 template <typename K, typename T>
-inline T& rbtree<K, T>::operator[](const K& key) {
+T& rbtree<K, T>::operator[](const K& key) {
   node* node = find_node(key);
   if (node == nullptr) {
     insert(key, T());
@@ -785,18 +786,18 @@ inline T& rbtree<K, T>::operator[](const K& key) {
 }
 
 template <typename K, typename T>
-inline bool rbtree<K, T>::contains(const K& key) {
+bool rbtree<K, T>::contains(const K& key) {
   node* node = find_node(key);
   return node != nullptr;
 }
 
 template <typename K, typename T>
-inline typename rbtree<K, T>::size_type rbtree<K, T>::size() {
+typename rbtree<K, T>::size_type rbtree<K, T>::size() {
   return m_size;
 }
 
 template <typename K, typename T>
-inline void rbtree<K, T>::clear() {
+void rbtree<K, T>::clear() {
   clear(m_root);
   m_size = 0;
 }

@@ -19,7 +19,7 @@ else
 	$(GCC) --coverage $(TESTS) $(LIBS) && ./a.out
 endif
 	lcov --capture --directory . -o coverage.info --ignore-errors inconsistent --rc branch_coverage=1
-	lcov --extract coverage.info 'containers/s21_vector.h' -o coverage_filter.info
+	lcov --extract coverage.info 'containers/*.h' -o coverage_filter.info
 	genhtml --output-directory report --legend coverage_filter.info
 ifeq ($(OS),Linux)
 	xdg-open report/index.html
