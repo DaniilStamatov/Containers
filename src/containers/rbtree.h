@@ -440,7 +440,14 @@ bool rbtree<K, T>::insert_node(node* temp, iterator& iter, bool canCollide) {
   if (!flag || (flag && canCollide)) {
     temp->m_parent = begin_parent;
     if (temp->m_value.first <= begin_parent->m_value.first) {
-      begin_parent->m_left = temp;
+      if(begin_parent->m_left) {
+        node* leftChild = begin_parent->m_left;
+        leftChild->m_parent = temp;
+        temp->m_left = leftChild;
+        temp->m_parent = begin_parent; 
+      } else {
+        begin_parent->m_left = temp;
+      }
     } else {
       begin_parent->m_right = temp;
     }
