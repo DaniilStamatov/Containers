@@ -84,6 +84,8 @@ class rbtree {
   std::pair<iterator, bool> insert(const value_type& value) noexcept;
   std::pair<iterator, bool> insert(const K& key, const T& obj);
   std::pair<iterator, bool> insert_or_assign(const K& key, const T& obj);
+  bool insert(const value_type& value, iterator& iter, bool canCollide = false);
+
   void erase(iterator pos);
   void erase(const value_type& value);
   void merge(rbtree& other);
@@ -100,8 +102,7 @@ class rbtree {
  private:
   void rotate_left(node* pos);
   void rotate_right(node* pos);
-  bool insert(const value_type& value, iterator& iter);
-  bool insert_node(node* temp, iterator& iter);
+  bool insert_node(node* temp, iterator& iter, bool canCollide);
   void clear(node* node);
   node* copy(node* node);
   void transfer_node(node* deleted_node, node* inserted_node) noexcept;
@@ -417,7 +418,7 @@ rbtree<K, T>::insert_or_assign(const K& key, const T& obj) {
 }
 
 template <typename K, typename T>
-bool rbtree<K, T>::insert_node(node* temp, iterator& iter) {
+bool rbtree<K, T>::insert_node(node* temp, iterator& iter, bool canCollide) {
   node* begin = m_root;
   node* begin_parent = nullptr;
   bool flag = false, inserted = false;
@@ -428,27 +429,30 @@ bool rbtree<K, T>::insert_node(node* temp, iterator& iter) {
     } else if (temp->m_value.first > begin->m_value.first) {
       begin = begin->m_right;
     } else {
-      iter = iterator(begin);
+      if(!canCollide){
+        iter = iterator(begin);
+      } else {
+        begin = begin->m_left;
+      }
       flag = true;
     }
   }
-  if (!flag) {
+  if (!flag || (flag && canCollide)) {
     temp->m_parent = begin_parent;
-    if (temp->m_value.first < begin_parent->m_value.first) {
-      std::cout << temp->m_parent->m_value.first << std::endl;
-
+    if (temp->m_value.first <= begin_parent->m_value.first) {
       begin_parent->m_left = temp;
     } else {
       begin_parent->m_right = temp;
     }
     inserted = true;
     iter = iterator(temp);
+    std::cout << "aboba" << std::endl;
   }
   return inserted;
 }
 
 template <typename K, typename T>
-bool rbtree<K, T>::insert(const value_type& value, iterator& iter) {
+bool rbtree<K, T>::insert(const value_type& value, iterator& iter, bool canCollide) {
   node* temp = new node(value);
   bool inserted = false;
   if (m_root == nullptr) {
@@ -457,7 +461,7 @@ bool rbtree<K, T>::insert(const value_type& value, iterator& iter) {
     iter = iterator(temp);
     inserted = true;
   } else {
-    inserted = insert_node(temp, iter);
+    inserted = insert_node(temp, iter, canCollide);
   }
   if (inserted) {
     balance_insertion(temp);
