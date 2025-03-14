@@ -1,5 +1,6 @@
-#include "../containers/s21_stack.h"
 #include <gtest/gtest.h>
+
+#include "../containers/s21_stack.h"
 
 // Test default constructor
 TEST(StackTest, DefaultConstructor) {

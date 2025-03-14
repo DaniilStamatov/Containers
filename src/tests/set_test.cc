@@ -4,22 +4,22 @@
 
 #include "../containers/s21_set.h"
 TEST(set_test, insert_simple) {
-  set<int> s21_set;
+  s21::set<int> s21_set;
 
-  std::pair<set<int>::iterator, bool> insert1 = s21_set.insert(9);
+  std::pair<s21::set<int>::iterator, bool> insert1 = s21_set.insert(9);
   EXPECT_EQ(*insert1.first, 9);
   EXPECT_EQ(insert1.second, 1);
 
-  std::pair<set<int>::iterator, bool> insert2 = s21_set.insert(9);
-  std::pair<set<int>::iterator, bool> insert3 = s21_set.insert(9);
+  std::pair<s21::set<int>::iterator, bool> insert2 = s21_set.insert(9);
+  std::pair<s21::set<int>::iterator, bool> insert3 = s21_set.insert(9);
   EXPECT_EQ(insert2.second, 0);
   EXPECT_EQ(insert3.second, 0);
 
-  std::pair<set<int>::iterator, bool> insert4 = s21_set.insert(23);
+  std::pair<s21::set<int>::iterator, bool> insert4 = s21_set.insert(23);
   EXPECT_EQ(*insert4.first, 23);
   EXPECT_EQ(insert4.second, 1);
 
-  std::pair<set<int>::iterator, bool> insert5 = s21_set.insert(98);
+  std::pair<s21::set<int>::iterator, bool> insert5 = s21_set.insert(98);
   EXPECT_EQ(*insert5.first, 98);
   EXPECT_EQ(insert5.second, 1);
 
@@ -27,17 +27,20 @@ TEST(set_test, insert_simple) {
 }
 
 TEST(set_insert, case2) {
-  set<std::string> s21_set;
+  s21::set<std::string> s21_set;
 
-  std::pair<set<std::string>::iterator, bool> insert1 = s21_set.insert("hello");
+  std::pair<s21::set<std::string>::iterator, bool> insert1 =
+      s21_set.insert("hello");
   EXPECT_EQ(*insert1.first, "hello");
   EXPECT_EQ(insert1.second, 1);
 
-  std::pair<set<std::string>::iterator, bool> insert2 = s21_set.insert("hi");
+  std::pair<s21::set<std::string>::iterator, bool> insert2 =
+      s21_set.insert("hi");
   EXPECT_EQ(*insert2.first, "hi");
   EXPECT_EQ(insert2.second, 1);
 
-  std::pair<set<std::string>::iterator, bool> insert3 = s21_set.insert("hla");
+  std::pair<s21::set<std::string>::iterator, bool> insert3 =
+      s21_set.insert("hla");
   EXPECT_EQ(*insert3.first, "hla");
   EXPECT_EQ(insert3.second, 1);
   s21_set.insert("hi");
@@ -55,7 +58,7 @@ TEST(set_erase, EraseOperations) {
   int num6 = 13;
   int num7 = 16;
 
-  set<int> s21_set = {num1, num2, num3, num4, num5, num6, num7};
+  s21::set<int> s21_set = {num1, num2, num3, num4, num5, num6, num7};
   std::set<int> std_set = {num1, num2, num3, num4, num5, num6, num7};
   auto it = s21_set.begin();
   auto std_it = std_set.begin();
@@ -103,7 +106,7 @@ TEST(set_erase, EraseOperations) {
 }
 
 TEST(set_erase, case2) {
-  set<int> s21_set = {30, 1543};
+  s21::set<int> s21_set = {30, 1543};
 
   auto it = s21_set.begin();
   ++it;
@@ -122,9 +125,9 @@ TEST(set_merge, case1) {
   double val22 = 12.902;
   double val33 = 56.41;
 
-  set<double> s21_set_int_ref{val1, val2, val3};
+  s21::set<double> s21_set_int_ref{val1, val2, val3};
 
-  set<double> s21_set_int_res{val11, val22, val33};
+  s21::set<double> s21_set_int_res{val11, val22, val33};
   s21_set_int_res.merge(s21_set_int_ref);
   EXPECT_EQ(s21_set_int_res.size(), 6U);
 }
@@ -137,34 +140,34 @@ TEST(set, case1) {
   double val22 = 12.902;
   double val33 = 56.41;
 
-  set<double> s21_set_int_ref{val1, val2, val3};
+  s21::set<double> s21_set_int_ref{val1, val2, val3};
 
-  set<double> s21_set_int_res{val11, val22, val33};
+  s21::set<double> s21_set_int_res{val11, val22, val33};
   s21_set_int_res.swap(s21_set_int_ref);
   EXPECT_EQ(s21_set_int_res.size(), 3U);
   EXPECT_TRUE(s21_set_int_ref.find(4.59) == s21_set_int_ref.begin());
 }
 
 TEST(InsertManyTest, strings) {
-    set<std::string> mySet;
-    auto results = mySet.insert_many("one", "two", "three");
+  s21::set<std::string> mySet;
+  auto results = mySet.insert_many("one", "two", "three");
 
-    EXPECT_EQ(results.size(), (size_t)3);
-    EXPECT_TRUE(results[0].second);
-    EXPECT_TRUE(results[1].second);
-    EXPECT_TRUE(results[2].second);
+  EXPECT_EQ(results.size(), (size_t)3);
+  EXPECT_TRUE(results[0].second);
+  EXPECT_TRUE(results[1].second);
+  EXPECT_TRUE(results[2].second);
 
-    EXPECT_EQ(mySet.size(), (size_t)3);
+  EXPECT_EQ(mySet.size(), (size_t)3);
 }
 
 TEST(InsertManyTest, doubles) {
-    set<double> mySet;
-    auto results = mySet.insert_many(4.59, 12.902, 56.41);
+  s21::set<double> mySet;
+  auto results = mySet.insert_many(4.59, 12.902, 56.41);
 
-    EXPECT_EQ(results.size(), (size_t)3);
-    EXPECT_TRUE(results[0].second);
-    EXPECT_TRUE(results[1].second);
-    EXPECT_TRUE(results[2].second);
+  EXPECT_EQ(results.size(), (size_t)3);
+  EXPECT_TRUE(results[0].second);
+  EXPECT_TRUE(results[1].second);
+  EXPECT_TRUE(results[2].second);
 
-    EXPECT_EQ(mySet.size(), (size_t)3);
+  EXPECT_EQ(mySet.size(), (size_t)3);
 }

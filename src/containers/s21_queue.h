@@ -51,9 +51,7 @@ class queue {
     other.size_ = 0;
   }
 
-  ~queue() {
-    clear();
-  }
+  ~queue() { clear(); }
 
   queue& operator=(queue&& other) noexcept {
     if (this != &other) {
@@ -118,6 +116,6 @@ class queue {
   }
 };
 
-}
+}  // namespace s21
 
 #endif  // QUEUE_H

@@ -2,7 +2,7 @@ GCC = g++ -Wall -Wextra -Werror -std=c++17 -g
 LIBS = $(shell pkg-config --libs --cflags gtest)
 OS = $(shell uname)
 FILES = $(wildcard containers/*.h tests/*.cc tests/*.h)
-TESTS = tests/multiset.cc tests/tests.cc
+TESTS = tests/*.cc
 
 test: clean
 	@reset

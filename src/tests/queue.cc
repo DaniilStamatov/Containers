@@ -1,5 +1,6 @@
-#include "../containers/s21_queue.h"
 #include <gtest/gtest.h>
+
+#include "../containers/s21_queue.h"
 
 namespace s21 {
 
@@ -149,4 +150,4 @@ TEST(QueueTest, StringQueue) {
   EXPECT_EQ(q.front(), "world");
 }
 
-}
+}  // namespace s21

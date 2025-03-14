@@ -548,7 +548,7 @@ TEST(InsertManyTest, Ints) {
   std::list<int> expected = {1, 6, 7, 8, 2, 3, 4, 5};
   s21::list<int>::iterator it = myList.begin();
   ++it;
-  myList.insert_many(it, 6, 7 ,8);
+  myList.insert_many(it, 6, 7, 8);
   auto it1 = myList.begin();
   auto it2 = expected.begin();
   while (it1 != myList.end() && it2 != expected.end()) {
@@ -558,12 +558,11 @@ TEST(InsertManyTest, Ints) {
   }
 }
 
-
 TEST(InsertManyTest, Empty) {
   s21::list<int> myList;
   std::list<int> expected = {6, 7, 8};
   s21::list<int>::iterator it = myList.begin();
-  myList.insert_many(it, 6, 7 ,8);
+  myList.insert_many(it, 6, 7, 8);
   auto it1 = myList.begin();
   auto it2 = expected.begin();
   while (it1 != myList.end() && it2 != expected.end()) {

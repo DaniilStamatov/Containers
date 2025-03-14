@@ -1,6 +1,7 @@
 #pragma once
 #include "rbtree.h"
 
+namespace s21 {
 template <typename K, typename T>
 class map : protected rbtree<K, T> {
  public:
@@ -24,10 +25,10 @@ class map : protected rbtree<K, T> {
   std::pair<iterator, bool> insert_or_assign(const K& key, const T& obj) {
     return rbtree<K, T>::insert_or_assign(key, obj);
   }
-  template<class... Args>
-  s21::vector<std::pair<iterator, bool>> insert_many(Args&& ...args) {
-    s21::vector<std::pair<iterator,bool>> results;
-    for(const auto& arg : {args...}) {
+  template <class... Args>
+  s21::vector<std::pair<iterator, bool>> insert_many(Args&&... args) {
+    s21::vector<std::pair<iterator, bool>> results;
+    for (const auto& arg : {args...}) {
       results.push_back(insert(arg));
     }
     return results;
@@ -47,3 +48,4 @@ class map : protected rbtree<K, T> {
 
   iterator end() noexcept { return rbtree<K, T>::end(); }
 };
+}  // namespace s21

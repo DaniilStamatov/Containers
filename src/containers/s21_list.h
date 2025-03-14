@@ -73,11 +73,11 @@ class list {
   void clear();
   iterator insert(iterator pos, const_reference value);
   template <class... Args>
-  iterator insert_many(const_iterator pos, Args&&... args);
+  iterator insert_many(const_iterator pos, Args &&...args);
   template <class... Args>
-  void insert_many_back(Args&&... args);
+  void insert_many_back(Args &&...args);
   template <class... Args>
-  void insert_many_front(Args&&... args);
+  void insert_many_front(Args &&...args);
   void push_back(const_reference data) noexcept;
   void pop_back();
   void push_front(const_reference value) noexcept;
@@ -490,8 +490,8 @@ typename s21::list<T>::const_reference s21::list<T>::back() {
 template <class T>
 template <class... Args>
 typename s21::list<T>::iterator s21::list<T>::insert_many(const_iterator pos,
-                                                Args&&... args) {
-  for (const auto& arg : {args...}) {
+                                                          Args &&...args) {
+  for (const auto &arg : {args...}) {
     insert(pos, arg);
   }
   return pos;
@@ -499,16 +499,16 @@ typename s21::list<T>::iterator s21::list<T>::insert_many(const_iterator pos,
 
 template <class T>
 template <class... Args>
-void s21::list<T>::insert_many_back(Args&&... args) {
-  for (const auto& arg : {args...}) {
+void s21::list<T>::insert_many_back(Args &&...args) {
+  for (const auto &arg : {args...}) {
     push_back(arg);
   }
 }
 
 template <class T>
 template <class... Args>
-void s21::list<T>::insert_many_front(Args&&... args) {
-  for (const auto& arg : {args...}) {
+void s21::list<T>::insert_many_front(Args &&...args) {
+  for (const auto &arg : {args...}) {
     push_front(arg);
   }
 }

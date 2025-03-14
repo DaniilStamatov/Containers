@@ -1,31 +1,36 @@
 #include <gtest/gtest.h>
 
-#include  <set>
+#include <set>
 
 #include "../containersplus/s21_multiset.h"
 TEST(multiset_test, insert_simple) {
   s21::multiset<int> s21_multiset;
 
-  std::pair <s21::multiset<int>::iterator, bool> insert1 = s21_multiset.insert(9);
+  std::pair<s21::multiset<int>::iterator, bool> insert1 =
+      s21_multiset.insert(9);
   EXPECT_EQ(*insert1.first, 9);
   EXPECT_EQ(insert1.second, true);
 
-  std::pair <s21::multiset<int>::iterator, bool> insert2 = s21_multiset.insert(9);
-  std::pair <s21::multiset<int>::iterator, bool> insert3 = s21_multiset.insert(9);
+  std::pair<s21::multiset<int>::iterator, bool> insert2 =
+      s21_multiset.insert(9);
+  std::pair<s21::multiset<int>::iterator, bool> insert3 =
+      s21_multiset.insert(9);
   EXPECT_EQ(*insert2.first, 9);
   EXPECT_EQ(*insert3.first, 9);
 
   EXPECT_EQ(insert2.second, true);
   EXPECT_EQ(insert3.second, true);
 
-  std::pair <s21::multiset<int>::iterator, bool> insert4 = s21_multiset.insert(23);
+  std::pair<s21::multiset<int>::iterator, bool> insert4 =
+      s21_multiset.insert(23);
   EXPECT_EQ(*insert4.first, 23);
   EXPECT_EQ(insert4.second, true);
 
-  std::pair <s21::multiset<int>::iterator, bool> insert5 = s21_multiset.insert(98);
+  std::pair<s21::multiset<int>::iterator, bool> insert5 =
+      s21_multiset.insert(98);
   EXPECT_EQ(*insert5.first, 98);
   EXPECT_EQ(insert5.second, true);
-  
+
   EXPECT_EQ(s21_multiset.size(), 5UL);
 }
 
@@ -129,27 +134,27 @@ TEST(multiset, case1) {
 }
 
 TEST(multisetInsertManyTest, strings) {
-    s21::multiset<std::string> mySet;
-    auto results = mySet.insert_many("one", "two", "three");
+  s21::multiset<std::string> mySet;
+  auto results = mySet.insert_many("one", "two", "three");
 
-    EXPECT_EQ(results.size(), (size_t)3);
-    EXPECT_TRUE(results[0].second);
-    EXPECT_TRUE(results[1].second);
-    EXPECT_TRUE(results[2].second);
+  EXPECT_EQ(results.size(), (size_t)3);
+  EXPECT_TRUE(results[0].second);
+  EXPECT_TRUE(results[1].second);
+  EXPECT_TRUE(results[2].second);
 
-    EXPECT_EQ(mySet.size(), (size_t)3);
+  EXPECT_EQ(mySet.size(), (size_t)3);
 }
 
 TEST(multisetInsertManyTest, doubles) {
-    s21::multiset<double> mySet;
-    auto results = mySet.insert_many(4.59, 12.902, 56.41);
+  s21::multiset<double> mySet;
+  auto results = mySet.insert_many(4.59, 12.902, 56.41);
 
-    EXPECT_EQ(results.size(), (size_t)3);
-    EXPECT_TRUE(results[0].second);
-    EXPECT_TRUE(results[1].second);
-    EXPECT_TRUE(results[2].second);
+  EXPECT_EQ(results.size(), (size_t)3);
+  EXPECT_TRUE(results[0].second);
+  EXPECT_TRUE(results[1].second);
+  EXPECT_TRUE(results[2].second);
 
-    EXPECT_EQ(mySet.size(), (size_t)3);
+  EXPECT_EQ(mySet.size(), (size_t)3);
 }
 
 TEST(multiset, find) {
@@ -165,21 +170,20 @@ TEST(multiset, find) {
   stdSet.insert(3);
   auto it1 = mySet.begin();
   auto it2 = stdSet.begin();
-  for(; it1 != mySet.end(); ++it1) {
+  for (; it1 != mySet.end(); ++it1) {
     std::cout << *it1 << " ";
   }
   std::cout << std::endl;
-  for(; it2 != stdSet.end(); ++it2) {
+  for (; it2 != stdSet.end(); ++it2) {
     std::cout << *it2 << " ";
   }
   it1 = mySet.begin();
   it2 = stdSet.begin();
-  for(; it1 != mySet.end(); ++it1)
-  {
-   EXPECT_EQ(*it1, *it2);
-   ++it2;
-  }  
- std::cout << std::endl;
+  for (; it1 != mySet.end(); ++it1) {
+    EXPECT_EQ(*it1, *it2);
+    ++it2;
+  }
+  std::cout << std::endl;
   std::cout << *mySet.begin() << " " << *stdSet.begin() << std::endl;
   EXPECT_EQ(eq, true);
   EXPECT_EQ(eq2, true);
