@@ -15,25 +15,20 @@ TEST(map_test, insert_simple) {
 
   s21::map<int, double> s21_map;
 
-  std::pair<s21::map<int, double>::iterator, bool> insert1 =
-      s21_map.insert(pair1);
+  std::pair<s21::map<int, double>::iterator, bool> insert1 = s21_map.insert(pair1);
   EXPECT_EQ(insert1.first->first, 9);
   EXPECT_EQ(insert1.second, 1);
 
-  std::pair<s21::map<int, double>::iterator, bool> insert2 =
-      s21_map.insert(pair2);
-  std::pair<s21::map<int, double>::iterator, bool> insert3 =
-      s21_map.insert(pair3);
+  std::pair<s21::map<int, double>::iterator, bool> insert2 = s21_map.insert(pair2);
+  std::pair<s21::map<int, double>::iterator, bool> insert3 = s21_map.insert(pair3);
   EXPECT_EQ(insert2.second, 0);
   EXPECT_EQ(insert3.second, 0);
 
-  std::pair<s21::map<int, double>::iterator, bool> insert4 =
-      s21_map.insert(pair4);
+  std::pair<s21::map<int, double>::iterator, bool> insert4 = s21_map.insert(pair4);
   EXPECT_EQ(insert4.first->first, 23);
   EXPECT_EQ(insert4.second, 1);
 
-  std::pair<s21::map<int, double>::iterator, bool> insert5 =
-      s21_map.insert(pair5);
+  std::pair<s21::map<int, double>::iterator, bool> insert5 = s21_map.insert(pair5);
   EXPECT_EQ(insert5.first->first, 98);
   EXPECT_EQ(insert5.second, 1);
 
@@ -105,27 +100,40 @@ TEST(map_erase, EraseOperations) {
   std::pair<int, int> pair6{13, 13};
   std::pair<int, int> pair7{16, 16};
 
-  s21::map<int, int> s21_map = {pair1, pair2, pair3, pair4,
-                                pair5, pair6, pair7};
+  s21::map<int, int> s21_map = {pair1, pair2, pair3, pair4, pair5, pair6, pair7};
+  std::map<int, int> std_map = {pair1, pair2, pair3, pair4, pair5, pair6, pair7};
   auto it = s21_map.begin();
-  printf("begin:%d\n", (*it).first);
+  auto it2 = std_map.begin();
   it++;
   it++;
   it++;
   it++;
+  it2++;
+  it2++;
+  it2++;
+  it2++;
   s21_map.erase(it);
+  std_map.erase(it2);
   EXPECT_EQ(s21_map.begin()->first, 4);
+  EXPECT_EQ(std_map.begin()->first, 4);
   EXPECT_EQ(s21_map.size(), 6U);
   it = s21_map.begin();
+  it2 = std_map.begin();
   s21_map.erase(it);
+  std_map.erase(it2);
   EXPECT_EQ(s21_map.begin()->first, 5);
+  EXPECT_EQ(std_map.begin()->first, 5);
   EXPECT_EQ(s21_map.size(), 5U);
 
   it = s21_map.begin();
+  it2 = std_map.begin();
   ++it;
+  ++it2;
 
   s21_map.erase(it);
+  std_map.erase(it2);
   EXPECT_EQ(s21_map.begin()->first, 5);
+  EXPECT_EQ(std_map.begin()->first, 5);
   EXPECT_EQ(s21_map.size(), 4U);
 
   it = s21_map.begin();
@@ -191,8 +199,19 @@ TEST(map_merge, case1) {
   s21::map<int, double> s21_map_int_ref{pair1, pair2, pair3};
 
   s21::map<int, double> s21_map_int_res{pair11, pair22, pair33};
+  std::map<int, double> std_map_int_res{pair11, pair22, pair33};
+  std::map<int, double> std_map_int_ref{pair1, pair2, pair3};
+
   s21_map_int_res.merge(s21_map_int_ref);
+  std_map_int_res.merge(std_map_int_ref);
   EXPECT_EQ(s21_map_int_res.size(), 6U);
+  EXPECT_EQ(std_map_int_res.size(), 6U);
+  auto it1 = s21_map_int_res.begin();
+  auto it2 = std_map_int_res.begin();
+  for (; it1 != s21_map_int_res.end(); ++it1) {
+    EXPECT_EQ(*it1, *it2);
+    ++it2;
+  }
 }
 
 TEST(map_swap, case1) {
@@ -206,8 +225,19 @@ TEST(map_swap, case1) {
   s21::map<int, double> s21_map_int_ref{pair1, pair2, pair3};
 
   s21::map<int, double> s21_map_int_res{pair11, pair22, pair33};
+  std::map<int, double> std_map_int_res{pair11, pair22, pair33};
+  std::map<int, double> std_map_int_ref{pair1, pair2, pair3};
+
   s21_map_int_res.swap(s21_map_int_ref);
+  std_map_int_res.swap(std_map_int_ref);
   EXPECT_EQ(s21_map_int_res.size(), 3U);
+  EXPECT_EQ(std_map_int_res.size(), 3U);
+  auto it1 = s21_map_int_res.begin();
+  auto it2 = std_map_int_res.begin();
+  for (; it1 != s21_map_int_res.end(); ++it1) {
+    EXPECT_EQ(*it1, *it2);
+    ++it2;
+  }
 }
 
 TEST(map_contains, case1) {
@@ -221,15 +251,13 @@ TEST(map_contains, case1) {
 }
 
 TEST(InsertManyTest, InsertNewElements) {
-  s21::map<int, std::string> myMap;
-  auto results =
-      myMap.insert_many(std::make_pair(1, "one"), std::make_pair(2, "two"),
-                        std::make_pair(3, "three"));
+    s21::map<int, std::string> myMap;
+    auto results = myMap.insert_many(std::make_pair(1, "one"), std::make_pair(2, "two"), std::make_pair(3, "three"));
 
-  EXPECT_EQ(results.size(), (size_t)3);
-  EXPECT_TRUE(results[0].second);
-  EXPECT_TRUE(results[1].second);
-  EXPECT_TRUE(results[2].second);
+    EXPECT_EQ(results.size(), (size_t)3);
+    EXPECT_TRUE(results[0].second);
+    EXPECT_TRUE(results[1].second);
+    EXPECT_TRUE(results[2].second);
 
-  EXPECT_EQ(myMap.size(), (size_t)3);
+    EXPECT_EQ(myMap.size(), (size_t)3);
 }

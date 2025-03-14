@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
-
 #include "s21_vector.h"
 template <typename K, typename T>
 class rbtree {
@@ -146,14 +145,14 @@ rbtree<K, T>::rbtree_iterator::rbtree_iterator(node* node) noexcept
     : m_current(node) {}
 
 template <typename K, typename T>
-typename rbtree<K, T>::reference rbtree<K, T>::rbtree_iterator::operator*()
-    const {
+typename rbtree<K, T>::reference
+rbtree<K, T>::rbtree_iterator::operator*() const {
   return m_current->m_value;
 }
 
 template <typename K, typename T>
-typename rbtree<K, T>::pointer rbtree<K, T>::rbtree_iterator::operator->()
-    const {
+typename rbtree<K, T>::pointer
+rbtree<K, T>::rbtree_iterator::operator->() const {
   if (!m_current) {
     throw std::runtime_error("Attempt to access value via invalid iterator");
   }
@@ -219,12 +218,14 @@ rbtree<K, T>::rbtree_iterator::operator--(int) {
 }
 
 template <typename K, typename T>
-bool rbtree<K, T>::rbtree_iterator::operator==(const rbtree_iterator& lhs) {
+bool rbtree<K, T>::rbtree_iterator::operator==(
+    const rbtree_iterator& lhs) {
   return this->m_current == lhs.m_current;
 }
 
 template <typename K, typename T>
-bool rbtree<K, T>::rbtree_iterator::operator!=(const rbtree_iterator& lhs) {
+bool rbtree<K, T>::rbtree_iterator::operator!=(
+    const rbtree_iterator& lhs) {
   return this->m_current != lhs.m_current;
 }
 
@@ -247,7 +248,8 @@ rbtree<K, T>::rbtree(const rbtree& other) noexcept
     : m_root(copy(other.m_root)), m_size(other.m_size) {}
 
 template <typename K, typename T>
-rbtree<K, T>::rbtree(rbtree&& other) noexcept : m_root(nullptr), m_size(0) {
+rbtree<K, T>::rbtree(rbtree&& other) noexcept
+    : m_root(nullptr), m_size(0) {
   swap(other);
 }
 
@@ -399,8 +401,8 @@ std::pair<typename rbtree<K, T>::iterator, bool> rbtree<K, T>::insert(
 }
 
 template <typename K, typename T>
-std::pair<typename rbtree<K, T>::iterator, bool> rbtree<K, T>::insert_or_assign(
-    const K& key, const T& obj) {
+std::pair<typename rbtree<K, T>::iterator, bool>
+rbtree<K, T>::insert_or_assign(const K& key, const T& obj) {
   iterator it = begin();
   bool is_inserted = false;
   node* n = find_node(key);
@@ -427,7 +429,7 @@ bool rbtree<K, T>::insert_node(node* temp, iterator& iter, bool canCollide) {
     } else if (temp->m_value.first > begin->m_value.first) {
       begin = begin->m_right;
     } else {
-      if (!canCollide) {
+      if(!canCollide){
         iter = iterator(begin);
       } else {
         begin = begin->m_left;
@@ -438,11 +440,11 @@ bool rbtree<K, T>::insert_node(node* temp, iterator& iter, bool canCollide) {
   if (!flag || (flag && canCollide)) {
     temp->m_parent = begin_parent;
     if (temp->m_value.first <= begin_parent->m_value.first) {
-      if (begin_parent->m_left) {
+      if(begin_parent->m_left) {
         node* leftChild = begin_parent->m_left;
         leftChild->m_parent = temp;
         temp->m_left = leftChild;
-        temp->m_parent = begin_parent;
+        temp->m_parent = begin_parent; 
       } else {
         begin_parent->m_left = temp;
       }
@@ -451,13 +453,13 @@ bool rbtree<K, T>::insert_node(node* temp, iterator& iter, bool canCollide) {
     }
     inserted = true;
     iter = iterator(temp);
+    std::cout << "aboba" << std::endl;
   }
   return inserted;
 }
 
 template <typename K, typename T>
-bool rbtree<K, T>::insert(const value_type& value, iterator& iter,
-                          bool canCollide) {
+bool rbtree<K, T>::insert(const value_type& value, iterator& iter, bool canCollide) {
   node* temp = new node(value);
   bool inserted = false;
   if (m_root == nullptr) {
@@ -601,7 +603,8 @@ void rbtree<K, T>::transfer_node(node* source, node* target) noexcept {
 }
 
 template <typename K, typename T>
-void rbtree<K, T>::replace_node(node* old_node, node* new_node) noexcept {
+void rbtree<K, T>::replace_node(node* old_node,
+                                       node* new_node) noexcept {
   if (new_node) {
     new_node->m_parent = old_node->m_parent;
   }
@@ -765,9 +768,9 @@ void rbtree<K, T>::balance_insertion(node* pos) {
 
 template <typename K, typename T>
 void rbtree<K, T>::set_grandfather(rbtree<K, T>::node* parent,
-                                   rbtree<K, T>::node* uncle,
-                                   rbtree<K, T>::node* grandfather,
-                                   rbtree<K, T>::node*& pos) {
+                                          rbtree<K, T>::node* uncle,
+                                          rbtree<K, T>::node* grandfather,
+                                          rbtree<K, T>::node*& pos) {
   parent->m_color = NodeColor::Black;
   uncle->m_color = NodeColor::Black;
   grandfather->m_color = NodeColor::Red;
