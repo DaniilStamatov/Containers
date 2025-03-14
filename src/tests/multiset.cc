@@ -160,6 +160,8 @@ TEST(multiset, find) {
   bool eq = (it == (++mySet.begin()));
   bool eq2 = (stdIt == (++stdSet.begin()));
   mySet.insert(3);
+  mySet.insert(5);
+  stdSet.insert(5);
   stdSet.insert(3);
   auto it1 = mySet.begin();
   auto it2 = stdSet.begin();
@@ -170,8 +172,14 @@ TEST(multiset, find) {
   for(; it2 != stdSet.end(); ++it2) {
     std::cout << *it2 << " ";
   }
-  std::cout << std::endl;
-  mySet.print_tree();
+  it1 = mySet.begin();
+  it2 = stdSet.begin();
+  for(; it1 != mySet.end(); ++it1)
+  {
+   EXPECT_EQ(*it1, *it2);
+   ++it2;
+  }  
+ std::cout << std::endl;
   std::cout << *mySet.begin() << " " << *stdSet.begin() << std::endl;
   EXPECT_EQ(eq, true);
   EXPECT_EQ(eq2, true);
